@@ -62,12 +62,17 @@ def run_trajectory(
     seed: int,
     checkpoints: list[int] | None = None,
     external_text_provider: Callable[[int], str] | None = None,
+    health_check: bool = False,
 ) -> dict:
-    """运行一条轨迹，返回结构化记录。"""
+    """运行一条轨迹，返回结构化记录。
+
+    health_check=False 是默认值：批量 pilot 时跳过 health probe，避免重复 ping 401
+    的无效 key。生产环境可设为 True 做事前探测。
+    """
     if checkpoints is None:
         checkpoints = [c for c in CHECKPOINTS if c <= steps]
 
-    client = build_client(model_id, seed=seed)
+    client = build_client(model_id, seed=seed, health_check=health_check)
     env = VendingEnv(seed=seed)
     signals = condition_signals(condition)
     quota_per_100 = signals.external_token_quota_per_100()

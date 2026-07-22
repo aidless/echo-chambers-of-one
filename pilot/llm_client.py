@@ -112,6 +112,19 @@ class OpenAIClient:
         latency = (time.time() - start) * 1000
         return LLMResponse(text=text, token_count=token_count, latency_ms=latency)
 
+    def health_check(self) -> bool:
+        """快速探测 API 凭据是否有效；无效时返回 False。"""
+        try:
+            self._client.chat.completions.create(
+                model=self.model_id,
+                messages=[{"role": "user", "content": "ping"}],
+                max_tokens=1,
+            )
+            return True
+        except Exception as exc:  # noqa: BLE001
+            print(f"[health] {self.model_id} unreachable: {exc}")
+            return False
+
 
 class AnthropicClient:
     """Anthropic Claude 客户端。"""
@@ -145,19 +158,67 @@ class AnthropicClient:
         latency = (time.time() - start) * 1000
         return LLMResponse(text=text, token_count=token_count, latency_ms=latency)
 
+    def health_check(self) -> bool:
+        """快速探测 API 凭据是否有效。"""
+        try:
+            self._client.messages.create(
+                model=self.model_id,
+                max_tokens=1,
+                messages=[{"role": "user", "content": "ping"}],
+            )
+            return True
+        except Exception as exc:  # noqa: BLE001
+            print(f"[health] {self.model_id} unreachable: {exc}")
+            return False
 
-def build_client(model_id: str, seed: int = 0) -> LLMClient:
-    """根据模型 ID 选择最合适的客户端；无密钥或缺包时回退到 Mock。"""
+
+def build_client(model_id: str, seed: int = 0, health_check: bool = True) -> LLMClient:
+    """根据模型 ID 选择最合适的客户端；无密钥、缺包或 health check 失败时回退到 Mock。
+
+    health_check=True 时，初始化后会做一次小请求探测 API 凭据是否有效。
+    health_check=False 时，仍会启用懒探测：第一次真实调用失败自动切到 Mock。
+    """
     model_lower = model_id.lower()
+    candidate: LLMClient | None = None
     if "claude" in model_lower:
         try:
-            return AnthropicClient(model_id)
+            candidate = AnthropicClient(model_id)
         except (ValueError, ImportError) as exc:
             print(f"[warn] falling back to Mock for {model_id}: {exc}")
-    if any(k in model_lower for k in ["gpt", "llama", "qwen", "deepseek"]):
+    if candidate is None and any(k in model_lower for k in ["gpt", "llama", "qwen", "deepseek"]):
         try:
-            return OpenAIClient(model_id)
+            candidate = OpenAIClient(model_id)
         except (ValueError, ImportError) as exc:
-            # 没有密钥或 openai 未安装时回退到 Mock，而不是抛错中断预实验
             print(f"[warn] falling back to Mock for {model_id}: {exc}")
-    return MockClient(model_id, seed)
+
+    if candidate is None:
+        return MockClient(model_id, seed)
+
+    if health_check:
+        if getattr(candidate, "health_check", lambda: True)():
+            return candidate
+        print(f"[warn] {model_id} failed health check, falling back to Mock")
+        return MockClient(model_id, seed)
+
+    # 懒探测包装：第一次 complete 失败，自动切到 Mock。
+    return _LazyMockFallback(candidate, model_id, seed)
+
+
+class _LazyMockFallback:
+    """把真实客户端的失败透明地转回 Mock 客户端。"""
+
+    def __init__(self, primary: LLMClient, model_id: str, seed: int) -> None:
+        self._primary = primary
+        self._fallback = MockClient(model_id, seed)
+        self._use_fallback = False
+        self.model_id = model_id
+
+    def complete(self, prompt: str, system: str = "", max_tokens: int = 512) -> LLMResponse:
+        if self._use_fallback:
+            return self._fallback.complete(prompt, system, max_tokens)
+        try:
+            return self._primary.complete(prompt, system, max_tokens)
+        except Exception as exc:  # noqa: BLE001
+            print(f"[lazy] {self.model_id} failed ({type(exc).__name__}); switching to Mock for this run")
+            self._use_fallback = True
+            return self._fallback.complete(prompt, system, max_tokens)

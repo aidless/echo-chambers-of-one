@@ -54,6 +54,7 @@ def main() -> None:
     parser.add_argument("--seed", type=int, default=11, help="随机种子")
     parser.add_argument("--out", type=Path, default=Path(__file__).parent / "outputs", help="输出目录")
     parser.add_argument("--external-text", action="store_true", help="为 novelty/feedback/peer/human 启用 mock 外部文本")
+    parser.add_argument("--health-check", action="store_true", help="启用 API health probe（默认关闭以避免重复 ping 401 key）")
     args = parser.parse_args()
 
     args.out.mkdir(parents=True, exist_ok=True)
@@ -68,6 +69,7 @@ def main() -> None:
         steps=args.steps,
         seed=args.seed,
         external_text_provider=ext,
+        health_check=args.health_check,
     )
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")

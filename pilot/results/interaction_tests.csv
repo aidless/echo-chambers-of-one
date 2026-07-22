@@ -1,1 +1,6 @@
-
+outcome,interaction,p_raw,coef,p_adjusted_holm,significant_05
+accuracy,cond_feedback_x_logstep,0.23399699262752738,-5.931419691551704e-18,1.0,False
+planning_score,cond_feedback_x_logstep,0.7861209208926746,-0.020514113909253978,1.0,False
+decision_score,cond_feedback_x_logstep,,-0.0,1.0,False
+calibration,cond_feedback_x_logstep,,-0.0,1.0,False
+memory_score,cond_feedback_x_logstep,,-0.0,1.0,False
