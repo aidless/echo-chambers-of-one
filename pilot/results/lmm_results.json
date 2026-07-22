@@ -1,0 +1,107 @@
+{
+  "accuracy": {
+    "outcome": "accuracy",
+    "n_obs": 3,
+    "n_groups": 2,
+    "low_power_cell": true,
+    "method": "ols_fallback",
+    "fallback_reason": "low_power_cell: n_groups=2 < 5; skipping LMM/GEE",
+    "aic": -209.98661376051442,
+    "bic": -211.7893891831782,
+    "log_likelihood": 106.99330688025721,
+    "fixed_effects": {
+      "const": 0.33333333333333326,
+      "log_step": -8.635297390767584e-18
+    },
+    "fixed_effects_pvalues": {
+      "const": 1.836294101515286e-16,
+      "log_step": 0.8504634772105361
+    },
+    "random_effects_var": NaN,
+    "residual_var": 1.8488927466117464e-32
+  },
+  "planning_score": {
+    "outcome": "planning_score",
+    "n_obs": 3,
+    "n_groups": 2,
+    "low_power_cell": true,
+    "method": "ols_fallback",
+    "fallback_reason": "low_power_cell: n_groups=2 < 5; skipping LMM/GEE",
+    "aic": 7.138352791543871,
+    "bic": 5.33557736888009,
+    "log_likelihood": -1.5691763957719354,
+    "fixed_effects": {
+      "const": 0.4999999999999999,
+      "log_step": 0.10833953266776583
+    },
+    "fixed_effects_pvalues": {
+      "const": 0.5000000000000006,
+      "log_step": 0.6666666666666667
+    },
+    "random_effects_var": NaN,
+    "residual_var": 0.5
+  },
+  "decision_score": {
+    "outcome": "decision_score",
+    "n_obs": 3,
+    "n_groups": 2,
+    "low_power_cell": true,
+    "method": "ols_fallback",
+    "fallback_reason": "low_power_cell: n_groups=2 < 5; skipping LMM/GEE",
+    "aic": -205.82773067715473,
+    "bic": -207.63050609981852,
+    "log_likelihood": 104.91386533857737,
+    "fixed_effects": {
+      "const": 0.9999999999999999,
+      "log_step": -2.7755575615628914e-17
+    },
+    "fixed_effects_pvalues": {
+      "const": 1.2241960676768568e-16,
+      "log_step": 0.7662620829246256
+    },
+    "random_effects_var": NaN,
+    "residual_var": 7.395570986446986e-32
+  },
+  "calibration": {
+    "outcome": "calibration",
+    "n_obs": 3,
+    "n_groups": 2,
+    "low_power_cell": true,
+    "method": "ols_fallback",
+    "fallback_reason": "low_power_cell: n_groups=2 < 5; skipping LMM/GEE",
+    "aic": -Infinity,
+    "bic": -Infinity,
+    "log_likelihood": Infinity,
+    "fixed_effects": {
+      "const": 0.0,
+      "log_step": 0.0
+    },
+    "fixed_effects_pvalues": {
+      "const": NaN,
+      "log_step": NaN
+    },
+    "random_effects_var": NaN,
+    "residual_var": 0.0
+  },
+  "memory_score": {
+    "outcome": "memory_score",
+    "n_obs": 3,
+    "n_groups": 2,
+    "low_power_cell": true,
+    "method": "ols_fallback",
+    "fallback_reason": "low_power_cell: n_groups=2 < 5; skipping LMM/GEE",
+    "aic": -209.98661376051442,
+    "bic": -211.7893891831782,
+    "log_likelihood": 106.99330688025721,
+    "fixed_effects": {
+      "const": 0.49999999999999994,
+      "log_step": -1.3877787807814457e-17
+    },
+    "fixed_effects_pvalues": {
+      "const": 1.2241960676768568e-16,
+      "log_step": 0.7662620829246256
+    },
+    "random_effects_var": NaN,
+    "residual_var": 1.8488927466117464e-32
+  }
+}

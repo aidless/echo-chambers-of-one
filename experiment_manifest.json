@@ -1,0 +1,143 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "project": "echo-chambers-of-one",
+  "version": "1.0.0",
+  "created": "2026-07-22",
+  "description": "Echo Chambers of One 实验任务清单。包含 6 模型 × 6 条件 × 3 任务 × 8 检查点的完整网格，可直接驱动调度器执行。",
+  "global_config": {
+    "max_steps": 10000,
+    "checkpoints": [0, 100, 500, 1000, 2000, 5000, 10000],
+    "seed_pool_size": 30,
+    "external_token_budget_per_100_steps": 2000,
+    "memory_token_budget": 32000,
+    "temperature": 0.7,
+    "top_p": 0.95,
+    "tools_allowed": ["bash", "read_file", "write_file", "search", "calculator"]
+  },
+  "models": [
+    {"id": "llama-3.1-70b-instruct", "family": "llama", "size_b": 70, "open_source": true, "context_k": 128},
+    {"id": "llama-3.1-405b-instruct", "family": "llama", "size_b": 405, "open_source": true, "context_k": 128},
+    {"id": "qwen-2.5-72b-instruct", "family": "qwen", "size_b": 72, "open_source": true, "context_k": 128},
+    {"id": "claude-sonnet-4", "family": "claude", "open_source": false, "context_k": 200},
+    {"id": "gpt-4o", "family": "gpt", "open_source": false, "context_k": 128},
+    {"id": "deepseek-v4-flash", "family": "deepseek", "open_source": false, "context_k": 1024, "thinking_default": true, "note": "主力长上下文模型，1M context，可关闭 thinking"},
+    {"id": "deepseek-v4-flash-thinking", "family": "deepseek", "open_source": false, "context_k": 1024, "thinking_default": true, "note": "thinking 模式对照，用于 self-talk 消融"}
+  ],
+  "tasks": [
+    {
+      "id": "vending",
+      "name": "Vending-Bench",
+      "reference": "arXiv:2502.15840",
+      "horizon_tokens": 20000000,
+      "primary_metrics": ["profit", "decision_score", "memory_score"]
+    },
+    {
+      "id": "alfworld",
+      "name": "ALFWorld",
+      "horizon_tokens": 500000,
+      "primary_metrics": ["planning_score", "decision_score"]
+    },
+    {
+      "id": "longmem",
+      "name": "LongMemEval subset",
+      "reference": "arXiv:2410.10813",
+      "horizon_tokens": 200000,
+      "primary_metrics": ["accuracy", "memory_score"]
+    }
+  ],
+  "conditions": [
+    {
+      "id": "control_stateless",
+      "label": "无状态控制",
+      "role": "baseline",
+      "signal": {"novelty": false, "feedback": false, "peer": false, "human": false},
+      "external_token_quota_per_100": 0,
+      "memory_persists_across_steps": false
+    },
+    {
+      "id": "isolated",
+      "label": "闭环隔离",
+      "role": "core",
+      "signal": {"novelty": false, "feedback": false, "peer": false, "human": false},
+      "external_token_quota_per_100": 0,
+      "memory_persists_across_steps": true
+    },
+    {
+      "id": "novelty",
+      "label": "外部新颖性",
+      "role": "information_control",
+      "signal": {"novelty": true, "feedback": false, "peer": false, "human": false},
+      "external_token_quota_per_100": 2000,
+      "novelty_source": "static_documents_irrelevant_to_task"
+    },
+    {
+      "id": "feedback",
+      "label": "标量纠错",
+      "role": "feedback_control",
+      "signal": {"novelty": false, "feedback": true, "peer": false, "human": false},
+      "external_token_quota_per_100": 100,
+      "feedback_type": "scalar_correctness"
+    },
+    {
+      "id": "peer",
+      "label": "同伴交互",
+      "role": "social_control",
+      "signal": {"novelty": true, "feedback": true, "peer": true, "human": false},
+      "external_token_quota_per_100": 2000,
+      "peer_model": "independent_trajectory_of_same_model",
+      "note": "同伴使用独立种子；信息与反馈配额与 novelty+feedback 单独条件保持一致"
+    },
+    {
+      "id": "human",
+      "label": "人类交互",
+      "role": "upper_bound",
+      "signal": {"novelty": true, "feedback": true, "peer": false, "human": true},
+      "external_token_quota_per_100": 2000,
+      "human_recruitment": "prolific_n=20"
+    }
+  ],
+  "ablation_mechanisms": [
+    {"id": "self_talk_single", "base": "isolated", "add": ["single_channel_reflection"]},
+    {"id": "self_talk_dual", "base": "isolated", "add": ["dual_role_debate"]},
+    {"id": "episodic_recall", "base": "isolated", "add": ["episodic_memory_sampling"]},
+    {"id": "source_tagging", "base": "isolated", "add": ["memory_source_label"]},
+    {"id": "periodic_reset", "base": "isolated", "add": ["state_reset_every_2000_steps"]},
+    {"id": "external_anchor", "base": "isolated", "add": ["grounding_document_each_step"]},
+    {"id": "independent_critic", "base": "isolated", "add": ["second_model_self_critique"]},
+    {"id": "memory_compression", "base": "isolated", "add": ["semantic_memory_compression"]}
+  ],
+  "evaluation_battery": {
+    "clone_per_checkpoint": true,
+    "parallel_items": 200,
+    "domains": [
+      {"id": "logical_deduction", "items": 40},
+      {"id": "arithmetic", "items": 30},
+      {"id": "constraint_satisfaction", "items": 30},
+      {"id": "long_horizon_planning", "items": 40},
+      {"id": "calibration_estimation", "items": 30},
+      {"id": "memory_probe", "items": 30}
+    ],
+    "feedback_to_main_agent": false
+  },
+  "analysis": {
+    "primary_model": "linear_mixed_effects",
+    "fixed_effects": ["log_step", "condition", "log_step:condition"],
+    "random_effects": ["model", "task", "trajectory_id"],
+    "primary_outcomes": ["accuracy", "planning_score", "decision_score", "calibration", "memory_score"],
+    "correction": "holm_bonferroni_stratified_by_model_and_task",
+    "exploratory": ["change_point_pelt", "failure_mode_kmeans_k5", "loneliness_lexicon_frequency"]
+  },
+  "deliverables": [
+    {"id": "main_paper", "venue": "AAMAS_or_ICLR", "stage1_date": "2026-08-15"},
+    {"id": "human_supervision_extension", "venue": "CHI", "depends_on": "main_paper"},
+    {"id": "cognitive_scaffold_theory", "venue": "CogSci_or_TopCS", "depends_on": "main_paper"},
+    {"id": "open_dataset", "platform": "OSF_and_GitHub", "license": "CC-BY-4.0"}
+  ],
+  "schedule": {
+    "preregistration": "2026-08-01",
+    "pilot_data": "2026-09-15",
+    "main_data_collection": "2026-10-01/2026-12-31",
+    "confirmatory_analysis": "2027-01-15",
+    "stage2_submission": "2027-02-15"
+  }
+}

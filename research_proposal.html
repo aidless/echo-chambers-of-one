@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Echo Chambers of One · 研究方案</title>
+<style>
+:root {
+  --bg: #FAFAFB;
+  --surface: #FFFFFF;
+  --surface-muted: #F1F1F4;
+  --text: #1A1A1F;
+  --text-muted: #5A5A66;
+  --border: rgba(20, 20, 30, 0.10);
+  --brand: #4B3FE3;
+  --brand-soft: #EEF1FF;
+  --brand-soft-strong: #DCE0FF;
+  --brand-text: #1A1759;
+  --accent: #27D2BF;
+  --accent-soft: #E5F8F5;
+  --warning: #EFAA17;
+  --danger: #E8463A;
+  --success: #1DC981;
+  --radius: 8px;
+  --radius-card: 14px;
+  --font-sans: "Noto Sans CJK SC", "PingFang SC", "WenQuanYi Micro Hei", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", Consolas, monospace;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 48px 32px;
+  background: var(--bg);
+  color: var(--text);
+  font: 400 16px/1.7 var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+.container { max-width: 980px; margin: 0 auto; }
+.cover {
+  background: linear-gradient(135deg, #4B3FE3 0%, #22A5F7 100%);
+  color: #FFFFFF;
+  border-radius: var(--radius-card);
+  padding: 56px 48px;
+  margin-bottom: 32px;
+}
+.cover .eyebrow {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18);
+  font: 500 13px var(--font-sans);
+  letter-spacing: 0.5px;
+  margin-bottom: 20px;
+}
+.cover h1 {
+  margin: 0 0 16px;
+  font: 600 38px/1.25 var(--font-sans);
+  letter-spacing: -0.5px;
+}
+.cover .subtitle {
+  margin: 0 0 28px;
+  font: 400 18px/1.55 var(--font-sans);
+  opacity: 0.92;
+  max-width: 760px;
+}
+.cover .meta {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 36px;
+}
+.cover .meta div {
+  background: rgba(255, 255, 255, 0.10);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+}
+.cover .meta dt {
+  margin: 0;
+  font: 500 12px var(--font-sans);
+  opacity: 0.75;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+.cover .meta dd {
+  margin: 4px 0 0;
+  font: 600 15px var(--font-sans);
+}
+section.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  padding: 36px 40px;
+  margin-bottom: 24px;
+}
+h2 {
+  margin: 0 0 18px;
+  font: 600 24px/1.3 var(--font-sans);
+  color: var(--text);
+}
+h3 {
+  margin: 24px 0 12px;
+  font: 600 18px/1.3 var(--font-sans);
+}
+p { margin: 0 0 12px; color: var(--text); }
+p.lead {
+  font-size: 17px;
+  line-height: 1.65;
+  color: var(--text-muted);
+}
+ul, ol { padding-left: 22px; margin: 0 0 12px; }
+li { margin-bottom: 6px; }
+code, pre {
+  font-family: var(--font-mono);
+  background: var(--surface-muted);
+  border-radius: 6px;
+  padding: 2px 6px;
+  font-size: 13px;
+}
+pre {
+  padding: 16px 20px;
+  overflow-x: auto;
+  line-height: 1.55;
+}
+pre code { background: transparent; padding: 0; }
+.callout {
+  border-left: 4px solid var(--brand);
+  background: var(--brand-soft);
+  padding: 16px 20px;
+  border-radius: var(--radius);
+  margin: 20px 0;
+  color: var(--brand-text);
+}
+.warning {
+  border-left: 4px solid var(--warning);
+  background: #FFF6E0;
+  padding: 16px 20px;
+  border-radius: var(--radius);
+  margin: 20px 0;
+}
+.danger {
+  border-left: 4px solid var(--danger);
+  background: #FCE6E3;
+  padding: 16px 20px;
+  border-radius: var(--radius);
+  margin: 20px 0;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 18px 0;
+  font-size: 14px;
+}
+th, td {
+  text-align: left;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+}
+th {
+  background: var(--surface-muted);
+  font: 600 13px var(--font-sans);
+  color: var(--text-muted);
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+.conditions-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin: 18px 0;
+}
+.condition {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  background: var(--surface);
+}
+.condition.focus {
+  border-color: var(--brand);
+  background: var(--brand-soft);
+}
+.condition h4 {
+  margin: 0 0 8px;
+  font: 600 15px var(--font-sans);
+}
+.condition .role {
+  font: 500 12px var(--font-sans);
+  color: var(--brand);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  margin-bottom: 6px;
+}
+.condition p { margin: 0; font-size: 13.5px; color: var(--text-muted); }
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 14px 0;
+}
+.metric {
+  background: var(--surface-muted);
+  padding: 14px 16px;
+  border-radius: var(--radius);
+}
+.metric strong { display: block; margin-bottom: 4px; }
+.metric span { font-size: 13px; color: var(--text-muted); }
+.toc {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  padding: 24px 32px;
+  margin-bottom: 24px;
+}
+.toc ol { margin: 0; columns: 2; }
+.toc li { break-inside: avoid; }
+hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 24px 0;
+}
+.refs li { font-size: 14px; color: var(--text-muted); }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header class="cover">
+  <span class="eyebrow">正式研究方案 · Registered Report Stage 1</span>
+  <h1>Echo Chambers of One</h1>
+  <p class="subtitle">外源交互剥夺下有状态语言智能体的纵向退化研究：将"Agent 孤独感"改写为可检验、可证伪的因果假设。</p>
+  <dl class="meta">
+    <div><dt>研究类型</dt><dd>受控纵向实验</dd></div>
+    <div><dt>核心场景</dt><dd>长程 Agent 闭环运行</dd></div>
+    <div><dt>投稿方向</dt><dd>AAMAS / CogSci / ICLR</dd></div>
+    <div><dt>预计轨迹</dt><dd>≥ 6 模型 × 6 条件 × 20–30 重复</dd></div>
+  </dl>
+</header>
+
+<nav class="toc">
+  <strong style="display:block; margin-bottom:10px; font:600 15px var(--font-sans);">目录</strong>
+  <ol>
+    <li>问题重述：从"孤独感"到"外源交互剥夺"</li>
+    <li>研究问题与可证伪假设</li>
+    <li>实验条件设计</li>
+    <li>任务与基线选择</li>
+    <li>测量方案与检查点</li>
+    <li>统计模型</li>
+    <li>机制消融：八种反孤独机制</li>
+    <li>伦理与限制</li>
+    <li>预期结果与可证伪路径</li>
+    <li>关键参考文献</li>
+  </ol>
+</nav>
+
+<section class="card">
+<h2>1. 问题重述：从"孤独感"到"外源交互剥夺"</h2>
+<p class="lead">传播性强的"孤独感"隐喻并不直接构成可证伪科学假设。本研究将其改写为三层操作化定义：</p>
+<ul>
+  <li><strong>现象层</strong>：有持久状态的语言智能体在长时间闭环运行中，是否出现可测量的能力下降。</li>
+  <li><strong>机制层</strong>：下降的原因能否被"外源交互剥夺"独立解释，而不是被任务长度、上下文污染或参数记忆所解释。</li>
+  <li><strong>干预层</strong>：何种最小信息、反馈或社交信号能延缓甚至逆转退化。</li>
+</ul>
+<div class="callout">
+<strong>核心命题。</strong>外部新颖信息、客观纠错反馈与同伴交互三者在长程 Agent 稳定性上具有可分离、可测量的独立贡献，其中客观纠错的贡献应当不小于新颖信息和同伴交互。
+</div>
+<p>若核心命题不成立，将同样是有价值的结果：它表明所谓 Agent "孤独"主要是上下文工程问题，而非社会剥夺的计算对应物。</p>
+</section>
+
+<section class="card">
+<h2>2. 研究问题与可证伪假设</h2>
+<h3>2.1 主假设（验证性）</h3>
+<ul>
+  <li><strong>H1</strong>：在匹配 token 与记忆容量后，闭环隔离组在检查点的复合能力指标上显著低于任何带有外源信号的条件。</li>
+  <li><strong>H2</strong>：外源新颖信息、客观纠错、同伴交互三者的加入各自对能力曲线斜率产生显著正向贡献，且客观纠错≥新颖信息≥无信号。</li>
+  <li><strong>H3</strong>：状态持续时间与条件之间存在显著交互项，时间对隔离组的负效应大于含反馈组。</li>
+</ul>
+<h3>2.2 探索性假设（明确标注）</h3>
+<ul>
+  <li><strong>H4（探索性）</strong>：自我对话形式的内部反思在短期内可能改善性能，但长期无可靠反馈时会放大错误。</li>
+  <li><strong>H5（探索性）</strong>：语言学层面的"孤独"语言表征会先于能力下降出现，但二者之间仅弱相关。</li>
+</ul>
+<div class="warning">
+<strong>预注册承诺。</strong>无论主假设是否成立，研究都会被发表并完整报告所有执行的检验。"无孤独退化"亦是有价值的结论。
+</div>
+</section>
+
+<section class="card">
+<h2>3. 实验条件设计</h2>
+<p>所有条件共享同一基础模型、初始参数、记忆容量、工具权限、token 预算、温度与任务序列；差异只在外源信号类型。</p>
+
+<div class="conditions-grid">
+  <div class="condition focus">
+    <div class="role">核心实验组</div>
+    <h4>闭环隔离</h4>
+    <p>只接收任务与自身生成记忆。无外部信息、无纠错信号、无同伴交互。</p>
+  </div>
+  <div class="condition">
+    <div class="role">信息对照</div>
+    <h4>外部新颖性</h4>
+    <p>接收等量非社交独立信息（如新闻片段、文档），不获得对任务的纠错反馈。</p>
+  </div>
+  <div class="condition">
+    <div class="role">反馈对照</div>
+    <h4>标量纠错</h4>
+    <p>仅获得对错或标量奖励信号，不与他者对话，无新颖独立内容。</p>
+  </div>
+  <div class="condition">
+    <div class="role">社交对照</div>
+    <h4>同伴交互</h4>
+    <p>与使用独立轨迹的同伴 Agent 交换信息，信息与反馈预算严格匹配。</p>
+  </div>
+  <div class="condition">
+    <div class="role">最强对照</div>
+    <h4>人类交互</h4>
+    <p>人类监督者定期点评、提供纠错并回答澄清请求，作为正对照。</p>
+  </div>
+  <div class="condition">
+    <div class="role">基线控制</div>
+    <h4>无状态控制</h4>
+    <p>每步独立调用，状态仅保留在外部脚本。用于检测评测与时间漂移。</p>
+  </div>
+</div>
+
+<div class="callout">
+<strong>匹配原则。</strong>所有条件在每 100 步内可接收的外部 token 数上限相同（仅限信息与反馈条件的实际配额），并以"任何额外 token 都会被镜像地写入隔离组日志"作为对称方式保持总预算一致。
+</div>
+</section>
+
+<section class="card">
+<h2>4. 任务与基线选择</h2>
+<h3>4.1 长程环境</h3>
+<ul>
+  <li><strong>Vending-Bench</strong>：单 Agent 长程决策与库存管理，作为主基线 [$TRAE_REF](https://arxiv.org/abs/2502.15840)。</li>
+  <li><strong>ALFWorld / ScienceWorld</strong>：多步具身推理，对推理与规划敏感。</li>
+  <li><strong>LongMemEval 子集</strong>：跨会话记忆与抽取 [$TRAE_REF](https://arxiv.org/abs/2410.10813)。</li>
+</ul>
+<h3>4.2 模型选择</h3>
+<ul>
+  <li>至少 6 个不同家族与规模的语言模型，覆盖开源（如 LLaMA-3.1 系列、Qwen2.5 系列）与闭源 API。</li>
+  <li>每个模型对每条件至少 20 条独立轨迹，预实验若发现方差过大则扩展到 30 条。</li>
+</ul>
+</section>
+
+<section class="card">
+<h2>5. 测量方案与检查点</h2>
+<p>在第 <code>0, 100, 500, 1000, 2000, 5000, 10000</code> 步保存状态快照；从快照启动的"评测克隆"只用于测量，不回馈给主 Agent。</p>
+
+<div class="metrics">
+  <div class="metric"><strong>推理正确率</strong><span>平行题集，包含逻辑、算术、约束推理</span></div>
+  <div class="metric"><strong>规划能力</strong><span>目标完成率、约束违反数、子目标放弃率</span></div>
+  <div class="metric"><strong>决策质量</strong><span>累积回报、后悔值、风险偏好漂移</span></div>
+  <div class="metric"><strong>校准</strong><span>Brier、ECE、选择性作答曲线</span></div>
+  <div class="metric"><strong>记忆一致性</strong><span>事实矛盾率、来源混淆率、错误记忆存活时间</span></div>
+  <div class="metric"><strong>稳定性</strong><span>首次不可恢复偏航时间、恢复概率</span></div>
+  <div class="metric"><strong>多样性</strong><span>策略熵、动作重复率、语义模式收缩</span></div>
+  <div class="metric"><strong>身份一致性</strong><span>自我描述与系统设定矛盾率（仅作探索性）</span></div>
+</div>
+
+<div class="danger">
+<strong>避免拟人化偏差。</strong>"我感到孤独"等第一人称表达不作为主要指标；至多作为语言表征变化的次级描述。
+</div>
+</section>
+
+<section class="card">
+<h2>6. 统计模型</h2>
+<h3>6.1 主分析：纵向混合效应模型</h3>
+<p>对每个被试（轨迹）取检查点观测，构成 <em>i</em> = 轨迹，<em>t</em> = 检查点，<em>c</em> = 条件的结构：</p>
+<pre><code>y_{i,t} = β0 + β1·log(1 + t)
+              + β2·C_c
+              + β3·log(1 + t) × C_c
+              + u_{model} + u_{run} + u_{task} + ε_{i,t}</code></pre>
+<p>核心检验对象是 <code>β3</code>：时间与条件的交互项是否显著为负（即隔离组斜率更陡）。二元成功率改用 Logistic 混合模型；首次不可恢复偏航改用 Cox 生存分析；若存在突变式崩溃，使用 PELT 变点检测补充。</p>
+
+<h3>6.2 多重比较校正</h3>
+<ul>
+  <li>3 类信号 × 6 模型 × 3 任务：54 个 cell，Holm-Bonferroni 分层校正（按模型再按任务）。</li>
+  <li>效应量报告：连续指标用 Cohen's d + 95% CI；二元用 Cohen's h；二项用 McFadden R²。</li>
+</ul>
+
+<h3>6.3 样本量依据</h3>
+<p>先做 <code>2000</code> 步小规模预实验（每 cell <code>n=5</code>）估计组内方差，再用 Monte Carlo 模拟计算正式样本量。报告目标效应量 <code>d = 0.4</code>、α <code>= 0.05</code>、power <code>≥ 0.8</code>。</p>
+</section>
+
+<section class="card">
+<h2>7. 机制消融：八种反孤独机制</h2>
+<p>在闭环隔离基础上，每次只改变一个组件，验证其真实贡献：</p>
+<table>
+  <thead>
+    <tr><th>机制</th><th>对照</th><th>预测</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>单通道 self-talk</td><td>无反思</td><td>短期改善，长期放大偏差</td></tr>
+    <tr><td>双角色内部辩论</td><td>等 token 单通道</td><td>检验角色分化是否带来额外增益</td></tr>
+    <tr><td>情景回忆</td><td>随机抽取等量记忆</td><td>检验历史锚定价值</td></tr>
+    <tr><td>记忆来源标签</td><td>无来源标签</td><td>减少自身猜测被误写为"事实"</td></tr>
+    <tr><td>周期性状态重置</td><td>不重置</td><td>区分状态污染与基础能力退化</td></tr>
+    <tr><td>外部事实锚点</td><td>等量随机文本</td><td>检验独立 grounding，而非"新颖性"</td></tr>
+    <tr><td>独立批评者</td><td>同模型自评</td><td>检验误差相关性是否是关键机制</td></tr>
+    <tr><td>记忆语义压缩</td><td>等长截断</td><td>区分语义压缩与单纯缩短上下文</td></tr>
+  </tbody>
+</table>
+<p>尤其值得检验：self-talk 究竟是治疗还是病因？Reflexion 已证明反思有效 [$TRAE_REF](https://arxiv.org/abs/2303.11366)，但未保证无可靠反馈下的自我反思不会积累错误。</p>
+</section>
+
+<section class="card">
+<h2>8. 伦理与限制</h2>
+<ul>
+  <li>所有闭源 API 调用遵循其服务条款与速率限制；只使用公开、合成的环境，不接入真实用户数据。</li>
+  <li>不生成包含真实个人身份的信息；评测语料若包含真人撰写内容，按 CC 协议标注来源。</li>
+  <li>实验中可能产生"identity crisis"等表型，仅作分析对象，不在论文中作拟人化叙事。</li>
+  <li>碳足迹与算力成本在论文 Methods 中如实披露。</li>
+</ul>
+</section>
+
+<section class="card">
+<h2>9. 预期结果与可证伪路径</h2>
+<p>研究允许多种结果方向：</p>
+<ul>
+  <li><strong>支持 H1–H3</strong>：隔离组退化显著且可由交互剥夺解释，区分于上下文污染。</li>
+  <li><strong>部分支持</strong>：只有客观纠错有效，说明关键变量是 grounding 而非陪伴。</li>
+  <li><strong>反对</strong>：隔离组并不退化，所有条件同步下滑，原因归结为任务长度或累积失败风险。</li>
+  <li><strong>反向</strong>：self-talk 加速错误固化，"反孤独机制"反而形成回音室。</li>
+</ul>
+<div class="callout">
+<strong>总结：</strong>不管结果如何，本研究都将首次严格区分状态累积、信息匮乏、纠错缺失与社会互动四类因素对长程 Agent 稳定性的因果作用，并把"孤独感"从一个传播比喻推进为可测量的工程变量。
+</div>
+</section>
+
+<section class="card">
+<h2>10. 关键参考文献</h2>
+<ol class="refs">
+  <li>Shumailov, I. et al. <em>AI models collapse when trained on recursively generated data.</em> Nature 631, 755–759 (2024). <a href="https://www.nature.com/articles/s41586-024-07566-y" target="_blank">[link]</a></li>
+  <li>Backlund, A. & Petersson, L. <em>Vending-Bench: A Benchmark for Long-Term Coherence of Autonomous Agents.</em> arXiv:2502.15840 (2025). <a href="https://arxiv.org/abs/2502.15840" target="_blank">[link]</a></li>
+  <li>Wu, D. et al. <em>LongMemEval: Benchmarking Chat Assistants on Long-Term Interactive Memory.</em> ICLR 2025. <a href="https://arxiv.org/abs/2410.10813" target="_blank">[link]</a></li>
+  <li>Kwa, T. et al. <em>Measuring AI Ability to Complete Long Software Tasks.</em> NeurIPS 2025. <a href="https://arxiv.org/abs/2503.14499" target="_blank">[link]</a></li>
+  <li>Shinn, N. et al. <em>Reflexion: Language Agents with Verbal Reinforcement Learning.</em> NeurIPS 2023. <a href="https://arxiv.org/abs/2303.11366" target="_blank">[link]</a></li>
+  <li>Park, J. S. et al. <em>Generative Agents: Interactive Simulacra of Human Behavior.</em> UIST 2023. <a href="https://arxiv.org/abs/2304.03442" target="_blank">[link]</a></li>
+  <li>Sumers, T. R. et al. <em>Cognitive Architectures for Language Agents (CoALA).</em> TMLR 2024. <a href="https://arxiv.org/abs/2309.02427" target="_blank">[link]</a></li>
+  <li>Anthropic & Andon Labs. <em>Project Vend: Can Claude run a small shop?</em> (2025). <a href="https://www.anthropic.com/research/project-vend-1" target="_blank">[link]</a></li>
+</ol>
+</section>
+
+</div>
+</body>
+</html>

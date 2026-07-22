@@ -1,0 +1,2 @@
+# 目录占位文件，确保 pilot/outputs 目录被纳入版本控制
+# 实际轨迹 JSON 由 .gitignore 排除，但目录结构保留

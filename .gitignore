@@ -1,0 +1,60 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Distribution
+build/
+dist/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Project-specific
+# API keys and secrets
+.env
+.env.local
+*.key
+*.pem
+
+# Pilot outputs (raw trajectories; keep directory but not contents)
+pilot/outputs/*.json
+!pilot/outputs/.gitkeep
+
+# OSF / cache
+.osf/
+.cache/
+
+# Logs
+*.log
+logs/
+
+# Large intermediate files
+*.zip
+*.tar.gz
+*.pkl
+*.npy
+*.npz
+
+# Smoke test results that should be regenerated
+smoke_test/trajectories.csv
+pilot/collected_trajectories.csv
