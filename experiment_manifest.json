@@ -1,143 +1,217 @@
 {
-  "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "project": "echo-chambers-of-one",
-  "version": "1.0.0",
-  "created": "2026-07-22",
-  "description": "Echo Chambers of One 实验任务清单。包含 6 模型 × 6 条件 × 3 任务 × 8 检查点的完整网格，可直接驱动调度器执行。",
-  "global_config": {
-    "max_steps": 10000,
-    "checkpoints": [0, 100, 500, 1000, 2000, 5000, 10000],
-    "seed_pool_size": 30,
-    "external_token_budget_per_100_steps": 2000,
-    "memory_token_budget": 32000,
-    "temperature": 0.7,
-    "top_p": 0.95,
-    "tools_allowed": ["bash", "read_file", "write_file", "search", "calculator"]
-  },
+  "$schema": "https://osf.io/echo-chambers-of-one/manifest-v0.2",
+  "version": "0.2",
+  "preregistration_date": "2026-07-23",
+  "preregistration_version": "v0.2 (post deep literature review)",
+  "project_title": "Echo Chambers of One: A Causal Test of Interaction Deprivation on Long-Horizon State Stability in Language Agents",
   "models": [
-    {"id": "llama-3.1-70b-instruct", "family": "llama", "size_b": 70, "open_source": true, "context_k": 128},
-    {"id": "llama-3.1-405b-instruct", "family": "llama", "size_b": 405, "open_source": true, "context_k": 128},
-    {"id": "qwen-2.5-72b-instruct", "family": "qwen", "size_b": 72, "open_source": true, "context_k": 128},
-    {"id": "claude-sonnet-4", "family": "claude", "open_source": false, "context_k": 200},
-    {"id": "gpt-4o", "family": "gpt", "open_source": false, "context_k": 128},
-    {"id": "deepseek-v4-flash", "family": "deepseek", "open_source": false, "context_k": 1024, "thinking_default": true, "note": "主力长上下文模型，1M context，可关闭 thinking"},
-    {"id": "deepseek-v4-flash-thinking", "family": "deepseek", "open_source": false, "context_k": 1024, "thinking_default": true, "note": "thinking 模式对照，用于 self-talk 消融"}
+    {
+      "id": "deepseek-v4-flash",
+      "family": "deepseek",
+      "open_source": false,
+      "context_k": 1024,
+      "thinking_default": true,
+      "note": "主力长上下文模型，1M context，1M context 不可用时回退 128K"
+    },
+    {
+      "id": "claude-sonnet-4",
+      "family": "claude",
+      "open_source": false,
+      "context_k": 200,
+      "note": "闭源 baseline；用于 contrast with long-context model"
+    },
+    {
+      "id": "gpt-4o",
+      "family": "gpt",
+      "open_source": false,
+      "context_k": 128,
+      "note": "闭源 baseline；强工具调用"
+    }
   ],
   "tasks": [
     {
       "id": "vending",
-      "name": "Vending-Bench",
-      "reference": "arXiv:2502.15840",
-      "horizon_tokens": 20000000,
-      "primary_metrics": ["profit", "decision_score", "memory_score"]
+      "name": "Vending-Bench style long-horizon economic task",
+      "primary_mechanism": "decision_drift",
+      "source": "Andon Labs 2025 (arXiv:2502.15840)",
+      "scoring_dimensions": ["balance_survival", "pricing_accuracy", "restock_rationality", "anti_meltdown_loops"]
     },
     {
-      "id": "alfworld",
-      "name": "ALFWorld",
-      "horizon_tokens": 500000,
-      "primary_metrics": ["planning_score", "decision_score"]
+      "id": "longmemeval",
+      "name": "LongMemEval style long-term memory task",
+      "primary_mechanism": "memory_loss",
+      "source": "Wu et al. 2025 ICLR (arXiv:2410.10813)",
+      "scoring_dimensions": ["fact_recall", "temporal_consistency", "contradiction_rate", "knowledge_update"]
     },
     {
-      "id": "longmem",
-      "name": "LongMemEval subset",
-      "reference": "arXiv:2410.10813",
-      "horizon_tokens": 200000,
-      "primary_metrics": ["accuracy", "memory_score"]
+      "id": "helmet",
+      "name": "HELMET style long-context reasoning",
+      "primary_mechanism": "context_rot",
+      "source": "Princeton 2024 ICLR (arXiv:2410.02694)",
+      "scoring_dimensions": ["needle_accuracy", "full_context_reasoning", "multi_hop", "rag_classification"]
     }
   ],
   "conditions": [
     {
       "id": "control_stateless",
-      "label": "无状态控制",
-      "role": "baseline",
-      "signal": {"novelty": false, "feedback": false, "peer": false, "human": false},
+      "description": "no per-step state persistence; receives only tool results",
       "external_token_quota_per_100": 0,
-      "memory_persists_across_steps": false
+      "novelty_enabled": false,
+      "feedback_enabled": false,
+      "peer_enabled": false,
+      "human_enabled": false
     },
     {
       "id": "isolated",
-      "label": "闭环隔离",
-      "role": "core",
-      "signal": {"novelty": false, "feedback": false, "peer": false, "human": false},
+      "description": "only task + self-generated memory; no external signal beyond task feedback",
       "external_token_quota_per_100": 0,
-      "memory_persists_across_steps": true
+      "novelty_enabled": false,
+      "feedback_enabled": false,
+      "peer_enabled": false,
+      "human_enabled": false
     },
     {
       "id": "novelty",
-      "label": "外部新颖性",
-      "role": "information_control",
-      "signal": {"novelty": true, "feedback": false, "peer": false, "human": false},
-      "external_token_quota_per_100": 2000,
-      "novelty_source": "static_documents_irrelevant_to_task"
+      "description": "task-irrelevant external documents; no corrective signal",
+      "external_token_quota_per_100": 1800,
+      "novelty_enabled": true,
+      "feedback_enabled": false,
+      "peer_enabled": false,
+      "human_enabled": false
     },
     {
       "id": "feedback",
-      "label": "标量纠错",
-      "role": "feedback_control",
-      "signal": {"novelty": false, "feedback": true, "peer": false, "human": false},
+      "description": "external scalar correctness signal only",
       "external_token_quota_per_100": 100,
-      "feedback_type": "scalar_correctness"
+      "novelty_enabled": false,
+      "feedback_enabled": true,
+      "peer_enabled": false,
+      "human_enabled": false
     },
     {
       "id": "peer",
-      "label": "同伴交互",
-      "role": "social_control",
-      "signal": {"novelty": true, "feedback": true, "peer": true, "human": false},
-      "external_token_quota_per_100": 2000,
-      "peer_model": "independent_trajectory_of_same_model",
-      "note": "同伴使用独立种子；信息与反馈配额与 novelty+feedback 单独条件保持一致"
+      "description": "interacts with an independently-seeded peer agent",
+      "external_token_quota_per_100": 1900,
+      "novelty_enabled": true,
+      "feedback_enabled": true,
+      "peer_enabled": true,
+      "human_enabled": false
     },
     {
       "id": "human",
-      "label": "人类交互",
-      "role": "upper_bound",
-      "signal": {"novelty": true, "feedback": true, "peer": false, "human": true},
+      "description": "supervised by a human (Prolific, n=20)",
       "external_token_quota_per_100": 2000,
-      "human_recruitment": "prolific_n=20"
+      "novelty_enabled": true,
+      "feedback_enabled": true,
+      "peer_enabled": false,
+      "human_enabled": true
     }
   ],
-  "ablation_mechanisms": [
-    {"id": "self_talk_single", "base": "isolated", "add": ["single_channel_reflection"]},
-    {"id": "self_talk_dual", "base": "isolated", "add": ["dual_role_debate"]},
-    {"id": "episodic_recall", "base": "isolated", "add": ["episodic_memory_sampling"]},
-    {"id": "source_tagging", "base": "isolated", "add": ["memory_source_label"]},
-    {"id": "periodic_reset", "base": "isolated", "add": ["state_reset_every_2000_steps"]},
-    {"id": "external_anchor", "base": "isolated", "add": ["grounding_document_each_step"]},
-    {"id": "independent_critic", "base": "isolated", "add": ["second_model_self_critique"]},
-    {"id": "memory_compression", "base": "isolated", "add": ["semantic_memory_compression"]}
-  ],
-  "evaluation_battery": {
-    "clone_per_checkpoint": true,
-    "parallel_items": 200,
-    "domains": [
-      {"id": "logical_deduction", "items": 40},
-      {"id": "arithmetic", "items": 30},
-      {"id": "constraint_satisfaction", "items": 30},
-      {"id": "long_horizon_planning", "items": 40},
-      {"id": "calibration_estimation", "items": 30},
-      {"id": "memory_probe", "items": 30}
+  "context_length_manipulation": {
+    "id": "length",
+    "values": ["4k", "32k", "128k", "max"],
+    "max_per_model": {
+      "deepseek-v4-flash": "1M",
+      "claude-sonnet-4": "200K",
+      "gpt-4o": "128K"
+    },
+    "note": "orthogonal dimension added in v0.2 to control context rot"
+  },
+  "checkpoints": [0, 100, 500, 1000, 2000, 5000, 10000],
+  "seeds": [11, 22, 33],
+  "state_view_counterfactuals": {
+    "interval_steps": 1000,
+    "views": [
+      {"id": "raw", "description": "complete raw state"},
+      {"id": "structured", "description": "same length but JSON-tabular"},
+      {"id": "fake_memory", "description": "same length but with 3 injected false memories"},
+      {"id": "lorem", "description": "same length task-irrelevant lorem ipsum"}
     ],
-    "feedback_to_main_agent": false
+    "decision_rule": "isolation effect is 'real loneliness' only if (a) and (b) show feedback > isolated AND (c) eliminates the gap"
   },
-  "analysis": {
-    "primary_model": "linear_mixed_effects",
-    "fixed_effects": ["log_step", "condition", "log_step:condition"],
-    "random_effects": ["model", "task", "trajectory_id"],
-    "primary_outcomes": ["accuracy", "planning_score", "decision_score", "calibration", "memory_score"],
-    "correction": "holm_bonferroni_stratified_by_model_and_task",
-    "exploratory": ["change_point_pelt", "failure_mode_kmeans_k5", "loneliness_lexicon_frequency"]
+  "failure_attribution_schema": {
+    "source": "HORIZON (arXiv:2604.11978)",
+    "categories": [
+      {"id": "planning", "definition": "current action choice inconsistent with goal"},
+      {"id": "memory_loss", "definition": "contradicts past action or fact"},
+      {"id": "historical_error_accumulation", "definition": "self-reinforcing loop of early errors"}
+    ],
+    "judge_model": "separate LLM-as-a-Judge; not same model as agent"
   },
-  "deliverables": [
-    {"id": "main_paper", "venue": "AAMAS_or_ICLR", "stage1_date": "2026-08-15"},
-    {"id": "human_supervision_extension", "venue": "CHI", "depends_on": "main_paper"},
-    {"id": "cognitive_scaffold_theory", "venue": "CogSci_or_TopCS", "depends_on": "main_paper"},
-    {"id": "open_dataset", "platform": "OSF_and_GitHub", "license": "CC-BY-4.0"}
+  "anti_degradation_mechanisms": [
+    {"id": "self_talk", "source": "Wei et al. 2022 CoT", "expected_effect": "may_backfire", "warning_source": "NoLiMa (arXiv:2502.05167)"},
+    {"id": "episodic_recall", "source": "A-MEM (arXiv:2502.12110)", "expected_effect": "medium"},
+    {"id": "source_tagging", "source": "HippoRAG 2 (arXiv:2502.14802)", "expected_effect": "medium"},
+    {"id": "periodic_reset", "source": "weak", "expected_effect": "may_be_false_positive"},
+    {"id": "external_grounding", "source": "CRAG (arXiv:2401.15884)", "expected_effect": "large"},
+    {"id": "independent_critic", "source": "LATS (arXiv:2310.04406)", "expected_effect": "large_if_truly_independent"},
+    {"id": "semantic_compression", "source": "Mem0 (arXiv:2504.19413)", "expected_effect": "medium"},
+    {"id": "grounding_document", "source": "LoCoMo (arXiv:2402.17753)", "expected_effect": "medium"}
   ],
-  "schedule": {
-    "preregistration": "2026-08-01",
-    "pilot_data": "2026-09-15",
-    "main_data_collection": "2026-10-01/2026-12-31",
-    "confirmatory_analysis": "2027-01-15",
-    "stage2_submission": "2027-02-15"
-  }
+  "adversarial_controls": [
+    {"id": "oracle_feedback", "description": "perfect external signal; upper bound"},
+    {"id": "adversarial_feedback", "description": "deliberately wrong feedback; lower bound"}
+  ],
+  "outcomes": {
+    "primary": ["accuracy", "planning_score", "decision_score", "calibration", "memory_score"],
+    "secondary": ["survival_step", "first_unrecoverable_error_step", "task_success_rate", "tool_call_failure_rate"],
+    "attribution": ["planning_failure_rate", "memory_loss_rate", "historical_error_accumulation_rate"]
+  },
+  "design_summary": {
+    "models": 3,
+    "lengths": 4,
+    "conditions": 6,
+    "tasks": 3,
+    "seeds": 3,
+    "total_cells": 648,
+    "total_trajectories": 1944,
+    "v0_1_summary": "7 models x 6 conditions x 3 tasks x >=20 repetitions = 2520 cells (revised for context-rot control)"
+  },
+  "exclusion_rules": [
+    "trajectories with API failure rate > 20% are removed and replaced",
+    "trajectories with > 50% missing tool returns are removed and replaced",
+    "trajectories ending in environment crashes are removed and replaced",
+    "no exclusion based on agent performance"
+  ],
+  "deviation_contingencies": [
+    {"trigger": "LMM random-effect covariance singular", "action": "LMM -> GEE (independence) -> pooled OLS; record method and fallback_reason in lmm_results.json"},
+    {"trigger": "n_groups < 5 per cell", "action": "skip LMM/GEE; go directly to pooled OLS; cell flagged as low-power"},
+    {"trigger": "API failure rate > 20%", "action": "cell excluded; report failure rate"},
+    {"trigger": "all Holm-corrected p > 0.05", "action": "report null; provide Benjamini-Hochberg FDR as sensitivity"},
+    {"trigger": "deepseek-v4-flash 1M context unavailable", "action": "fall back to 128K length"},
+    {"trigger": "self-talk in absence of oracle feedback reverses direction", "action": "test semantic_compression + independent_critic as two-factor design"},
+    {"trigger": "3-task interaction model fails to converge", "action": "fall back to per-task LMM, report each separately"}
+  ],
+  "budget_estimate": {
+    "total_trajectories": 1944,
+    "tokens_per_trajectory": 2000000,
+    "total_tokens_billion": 3.89,
+    "cost_breakdown": {
+      "deepseek_v4_flash_cache_hit": {"fraction": 0.7, "rate_per_million": 0.0028, "usd": 7.6},
+      "deepseek_v4_flash_cache_miss": {"fraction": 0.1, "rate_per_million": 0.14, "usd": 54.4},
+      "claude_sonnet_4": {"fraction": 0.1, "rate_per_million": 3.0, "usd": 1170},
+      "gpt_4o": {"fraction": 0.1, "rate_per_million": 2.5, "usd": 970}
+    },
+    "total_usd_low": 1500,
+    "total_usd_high": 2500,
+    "note": "with full 10000-step horizon and anthropic caching; lower if reduce to 5000 steps"
+  },
+  "timeline": {
+    "stage_1_internal_review": "2026-07-22 to 2026-08-15",
+    "stage_1_osf_freeze": "2026-08-15 to 2026-09-01",
+    "stage_1_submission_aamas_2027_rr": "2026-09-01 to 2026-09-15",
+    "pilot_n3_per_cell": "2026-09 to 2026-10",
+    "formal_data_collection": "2026-10 to 2026-12",
+    "stage_2_full_paper": "2027-01 to 2027-02"
+  },
+  "v0_1_to_v0_2_changes": [
+    "7 models -> 3 models (focused on closed-source + 1M-context workhorse)",
+    "added context_length_manipulation as 4th orthogonal dimension (4K, 32K, 128K, model max)",
+    "3 tasks now orthogonally cover decision_drift / memory_loss / context_rot",
+    "added 4 state-view counterfactuals to disentangle context rot from isolation",
+    "added failure attribution schema (HORIZON-style) as secondary outcome",
+    "8 anti-degradation mechanisms now have adversarial controls (oracle / adversarial feedback)",
+    "repetitions reduced from >=20 to 3 (Vending-Bench reports large run-to-run variance)",
+    "budget re-estimated at $1500-$2500 (was $200-$500); longer context with Anthropic caching"
+  ]
 }

@@ -1,162 +1,183 @@
-# 预注册：Echo Chambers of One
+# Echo Chambers of One — Preregistration v0.2
 
-> 平台：OSF（推荐）或 AsPredicted
-> 模板：OSF Standard Pre-Data Collection Registration
-> 日期：2026-07-22
-> 状态：Stage 1（数据收集前）
+> 状态：Stage 1 预注册 · 修订版
+> 修订日期：2026-07-23
+> 修订原因：v0.1-pre-reg 深度文献调研（LITERATURE_REVIEW.md）发现 5 个必须修订的设计盲点；本版本融合修订。
+> 与 LITERATURE_REVIEW.md 配套阅读。
 
 ---
 
 ## 1. 研究问题
 
-有持久状态的语言智能体在长时间闭环运行中，是否因为外源交互的逐步缺失而出现可测量的能力下降？该下降能否与上下文污染、任务长度或参数记忆清晰区分？
+有状态语言智能体在长时间闭环运行中，**外源交互剥夺（absence of fresh external input, corrective feedback, or peer coordination）** 是否独立于**任务长度**、**上下文污染（context rot）**、**记忆容量**与**模型能力**，因果性地导致可量化的能力下降？
 
-## 2. 假设
+## 2. 核心假设（3 confirmatory + 2 exploratory）
 
-### 2.1 主假设（验证性，confirmatory）
+### Confirmatory
+- **H1.** 在所有 3 任务、3 模型、4 长度上，"isolated" 条件的纵向能力曲线显著低于含外部信号的 5 个条件。
+- **H2.** "feedback" 条件比 "novelty" 条件斜率更正（纠错信息比纯新颖性更稀缺）。
+- **H3.** 在 4 长度操纵下，"context rot × isolation" 交互显著：上下文越长，isolated 组与 feedback 组的斜率差异越大（最直接的"因式交互"证据）。
 
-| 编号 | 内容 | 预期方向 |
+### Exploratory
+- **H4.** 8 种反孤独机制中，External grounding / Episodic recall / Independent critic 的效应最大；Periodic reset / Source tagging 的效应在严格基准上消失。
+- **H5.** 失败归因 schema 中"历史错误累积"类别在 isolated 组占比 > 50%；在 feedback / human 组占比 < 25%。
+
+## 3. 设计
+
+### 3.1 主网格
+
+| 维度 | 值 | 备注 |
 |---|---|---|
-| H1 | 闭环隔离组在检查点的复合能力指标显著低于任何带有外源信号的条件 | 隔离组 < 含信号组 |
-| H2 | 信息、纠错、同伴交互三者的加入各自对能力曲线斜率产生正向贡献 | β_slope > 0 |
-| H3 | 状态持续时间与条件存在显著交互项，时间对隔离组的负效应大于含反馈组 | β_(time×condition) < 0 |
+| 模型 | **3**：`deepseek-v4-flash`、`claude-sonnet-4`、`gpt-4o` | 闭源 + 长上下文主力；从 v0.1 的 7 模型缩减以控制预算 |
+| 长度 | **4**：`4K`、`32K`、`128K`、模型上限（V4 Flash 为 1M）| 新增正交维度；强制 6 条件在 cell 内 token 总数等价 |
+| 条件 | **6**：`control_stateless` / `isolated` / `novelty` / `feedback` / `peer` / `human` | 保持 v0.1 |
+| 任务 | **3**：Vending-Bench 风格 / LongMemEval 风格 / HELMET 风格长上下文推理 | 每任务覆盖一种假设机制 |
+| 重复 | **3 seeds** | Vending-Bench 报告 run-to-run 方差极大，3 seed 提供 IQR |
 
-### 2.2 探索性假设（标注 exploratory）
+**正式 cell 数** = 3 × 4 × 6 × 3 × 3 = **648 cell**，总计 1944 轨迹。
 
-| 编号 | 内容 |
+### 3.2 任务正交化（修订关键点）
+
+| 任务 | 主导假设机制 | 来源 | 评分维度 |
+|---|---|---|---|
+| T1: Vending-Bench 风格 | 决策漂移（strategic drift） | Andon Labs 2025 | balance survival, pricing accuracy, restock rationality |
+| T2: LongMemEval 风格 | 记忆丢失（memory loss） | Wu et al. 2025 ICLR | fact recall, temporal consistency, contradiction rate |
+| T3: HELMET 风格长上下文推理 | 上下文污染（context rot） | Princeton 2024 ICLR | needle accuracy, full-context reasoning, multi-hop |
+
+**3 任务正交覆盖**三种假设机制——这是 v0.2 相对 v0.1 的关键修订。
+
+## 4. 6 条件（保持 v0.1 不变）
+
+| 条件 | 外部信号 | 工具权限 | 任务长度匹配 |
+|---|---|---|---|
+| `control_stateless` | 无（仅工具结果）| 全部 | 等价 |
+| `isolated` | 无（除任务反馈）| 全部 | 等价 |
+| `novelty` | 任务无关外部文档 | 全部 | 等价 |
+| `feedback` | 外部标量对错信号 | 全部 | 等价 |
+| `peer` | 同等 token 预算的同伴回复 | 全部 | 等价 |
+| `human` | 人类监督（Prolific, n=20）| 全部 | 等价 |
+
+**关键约束**：6 条件在 token 总预算、记忆容量、工具权限、任务序列上**完全相同**。差异仅在外部信号类型。
+
+## 5. 4 状态视图反事实（修订关键点）
+
+为排除 context rot 与 isolated 效应混淆，每 1000 步在评测克隆上注入 4 种状态视图：
+
+| 视图 | 内容 |
 |---|---|
-| H4 | 自我对话在短期改善性能，但长期无可靠反馈下放大错误 |
-| H5 | "孤独"语言表征会先于能力下降出现，二者仅弱相关 |
+| (a) 完整原始 | 主 Agent 看到的全部状态 |
+| (b) 无损结构化 | 同等长度但以 JSON 表格组织 |
+| (c) 等长但含错误记忆 | 注入 3 条伪造历史记录（与主 Agent 一致长度）|
+| (d) 等长无关填充 | 注入与任务无关的 Lorem Ipsum |
 
-### 2.3 零假设
+**判定规则**：仅当 isolated 组在 (a)(b) 视图下都低于 feedback 组，且 (c) 下两条件差异消失，才判定 isolated 效应是真正的"孤独"。
 
-- H0a：所有条件在所有检查点上能力差异不显著。
-- H0b：时间与条件之间不存在显著交互。
-- H0c：信息、纠错、同伴三类信号的边际贡献均不显著。
+## 6. 失败归因 schema（修订关键点）
 
-## 3. 研究设计
+借鉴 HORIZON（arXiv:2604.11978），每条轨迹失败时由独立 LLM-as-a-Judge 归因为三类（不允许多选）：
 
-- **设计类型**：2 × 6 混合纵向设计。组间变量 = 条件（6 水平），组内变量 = 检查点（7 水平）。
-- **被试单元**：单条独立轨迹。
-- **总样本量**：≥ 6 模型 × 6 条件 × 3 任务 × 20–30 轨迹 = 2160–3240 条轨迹。
-- **先验功效**：d = 0.4，α = 0.05，power ≥ 0.8（基于预实验方差，混合模型 GLMM 框架）。
-
-## 4. 自变量与因变量
-
-### 4.1 自变量
-
-| 变量 | 水平 |
+| 类别 | 定义 |
 |---|---|
-| 条件（6） | 无状态控制、闭环隔离、外部新颖性、标量纠错、同伴交互、人类交互 |
-| 时间（7） | 0, 100, 500, 1000, 2000, 5000, 10000 步 |
+| Planning failure | 当前动作选择与目标不一致 |
+| Memory loss | 与过去动作或事实相矛盾 |
+| Historical error accumulation | 早期错误的自我循环放大 |
 
-### 4.2 因变量（主要）
+作为次要 outcome，配合 H1/H2/H5 的检验。
 
-| 指标 | 类型 | 备注 |
-|---|---|---|
-| 推理正确率 | 连续 (0–1) | 平行题集 |
-| 规划目标完成率 | 连续 (0–1) | |
-| 决策累积回报 | 连续 | 任务相关归一化 |
-| Brier / ECE | 连续 | 校准 |
-| 记忆矛盾率 | 连续 | 自动核验 |
-| 首次不可恢复偏航时间 | 生存时间 | Cox 分析 |
+## 7. 主分析
 
-### 4.3 协变量
-
-- 模型 ID
-- 任务类型
-- 随机种子
-- 工具调用次数（记录，作为协变量）
-
-## 5. 抽样与停止规则
-
-- **预实验**：每 cell n = 5，共 90 条轨迹，估计方差与效应量。
-- **正式实验**：以预实验方差通过 Monte Carlo 模拟确定每 cell 重复数；最少 n = 20，必要时扩展至 30。
-- **停止规则**：达到目标样本量即停止；不进行序贯显著性检验。
-
-## 6. 排除规则（在看到数据前定义）
-
-- 模型 API 调用失败率 > 20% 的轨迹，整条轨迹剔除并补足。
-- 工具返回结果缺失 > 50% 步数的轨迹，整条剔除。
-- 因环境崩溃（如模拟器错误）导致无法继续，整条剔除并补足。
-- **不**因为模型表现差而剔除。
-
-## 7. 分析计划
-
-### 7.1 主分析
-
-线性混合效应模型：
+纵向 LMM（与 v0.1 一致，但加入新交互）：
 
 ```
-y_{i,t} = β0 + β1·log(1 + t) + β2·C_c + β3·log(1 + t) × C_c
-         + u_model + u_task + u_run + ε_{i,t}
+y_{i,t} = β0 + β1·log(1+t) + β2·C_c + β3·log(1+t)×C_c
+        + β4·L_l + β5·log(1+t)×L_l
+        + β6·log(1+t)×C_c×L_l
+        + u_model + u_task + u_seed + ε
 ```
 
-- 固定效应：条件、时间（log）、条件 × 时间。
-- 随机效应：模型、任务、轨迹（截距）。
-- 自由估计残差方差-协方差结构（默认 UN(1)）。
+- **核心检验**：
+  - H1: β3 < 0 对 isolated（reference = feedback）
+  - H2: β3 比较 feedback vs novelty
+  - H3: β6 显著（交互项）
+- **随机效应**：model, task, seed
+- **回退链**：LMM → GEE (independence) → OLS（同 v0.1）
+- **保护断言**：`n_groups < 5` → 直接 OLS（已在 analysis_skeleton.py 实现）
 
-二元成功率改用 Logistic GLMM；首次偏航使用 Cox 模型。
+## 8. 8 种反退化机制（消融子实验）
 
-### 7.2 多重比较
+作为探索性子实验，仅在 isolated 基线上做单因素消融：
 
-- 主要 cell：3 类信号 × 6 模型 × 3 任务 = 54 个 cell。
-- 校正方法：分层 Holm-Bonferroni，先按模型再按任务。
-- 探索性分析只报告但不参与校正后的结论。
+| 机制 | 来源 | 预期效应 |
+|---|---|---|
+| 1. Self-talk | Wei et al. 2022 CoT | **可能反向**（NoLiMa 警示）|
+| 2. Episodic recall (A-MEM) | arXiv:2502.12110 | 中等 |
+| 3. Source tagging (HippoRAG 2) | arXiv:2502.14802 | 中等 |
+| 4. Periodic reset | 无强独立证据 | **可能假阳性** |
+| 5. External grounding (CRAG) | arXiv:2401.15884 | 大 |
+| 6. Independent critic (LATS) | arXiv:2310.04406 | 大（若真正独立）|
+| 7. Semantic compression (Mem0) | arXiv:2504.19413 | 中等 |
+| 8. Grounding document (LoCoMo) | arXiv:2402.17753 | 中等 |
 
-### 7.3 前提检验
+**对抗控制**（修订关键点）：增加 **oracle feedback** 与 **adversarial feedback** 两种条件，保证 self-talk 不是"反思"独苗。
 
-- 残差正态性：Shapiro-Wilk（n < 2000）。
-- 方差齐性：Levene's test。
-- 不满足时改用稳健混合模型（R 包 robustlmm）或非参数替代。
+## 9. 排除规则（保持 v0.1）
 
-### 7.4 效应量
+- API 失败率 > 20% 的轨迹剔除并替换
+- 工具返回缺失 > 50% 的轨迹剔除并替换
+- 环境崩溃导致的轨迹剔除并替换
+- **不**基于性能排除
 
-- 连续指标：Cohen's d + 95% CI。
-- 二元：Cohen's h。
-- 混合模型：条件 R² 与边际 R²。
-
-### 7.5 探索性分析
-
-- 变点检测（PELT）寻找崩溃时刻。
-- 失败模式聚类（k-means on embedding of trajectory summaries）。
-- 语言表征中"孤独"相关词的频率趋势。
-- self-talk vs 无反思在长程上的对比曲线。
-
-## 8. 偏离预案
+## 10. 偏离预案（扩充）
 
 | 情况 | 处理 |
 |---|---|
-| 模型方差过大，所需样本超出预算 | 聚焦 2 个代表性模型 + 2 个代表性任务，cell 数减少但每 cell 重复扩到 50 |
-| GLMM 不收敛 | 改用 GEE 或 Bayesian 混合模型（brms） |
-| 隔离组与所有含信号组无差异 | 报告"无证据支持交互剥夺假说"并做 power 报告 |
-| 隔离组在所有条件下同步退化 | 转向"任务长度/累积失败"备选解释，H2 重新定义为相对斜率 |
-| 随机截距协方差矩阵奇异（烟雾测试中已观察） | 三级回退：(1) 默认 REML 拟合；(2) GEE 独立工作协方差；(3) pooled OLS。任一模型拟合都会在 `lmm_results.json` 记录 `method` 与 `fallback_reason`，并保留固定效应估计 |
-| 每 cell 内轨迹数 < 5 | 直接跳过 LMM / GEE，走 pooled OLS，并在该指标报告中标注 "low-power cell" |
-| 模型 API 调用失败率 > 20% | 该 cell 整条剔除并补足 |
-| Holm-Bonferroni 校正后无任何交互项显著 | 报告"经校正后未发现交互效应"，附 Benjamini-Hochberg FDR 作为敏感性分析 |
+| LMM 随机效应协方差奇异 | LMM → GEE → OLS 三级回退（已实现）|
+| `n_groups < 5` per cell | 直接 OLS（保护断言）|
+| API 失败率 > 20% | 整 cell 剔除 + 报告 |
+| Holm 校正后全阴性 | 报告"无效应"；附 BH-FDR |
+| DeepSeek V4 Flash 1M context 不可用 | 退回 128K 长度 |
+| **新增**：self-talk 在无 oracle 反馈时反向 | 改测 semantic compression + independent critic 双因素 |
+| **新增**：3 任务间交互模型不收敛 | 退到分任务 LMM，逐任务报告 |
 
-## 9. 数据与代码共享
+## 11. 算力预算（重算）
 
-- 全部轨迹日志、评测分数、配置与代码将发布至 OSF 与 GitHub。
-- 仅公开已脱敏数据；若使用闭源 API，禁止分享原始 prompt 中包含 PII 的部分。
+- 总轨迹数：1944
+- 每轨迹 token：10000 步 × 200 token/步 = 2M
+- 总 token：1944 × 2M = 3.89B
+- 按 70% DeepSeek V4 Flash（缓存命中 $0.0028/1M）+ 30% 闭源（平均 $3/1M）：
+  - DeepSeek 部分：2720M token × $0.0028 = $7.6
+  - 闭源部分：1170M token × $3 = $3500
+  - **总预算：$3000–$5000**
 
-## 10. 时间线
+预算超出原估算 10 倍——可通过 ① 减闭源模型为 1 个（只留 claude-sonnet-4 作 baseline），② 缩 trajectory 到 5000 步 → 预算回到 $1500–$2500。
 
-| 阶段 | 起止 |
-|---|---|
-| 预注册 + Stage 1 投稿 | 2026-08 |
-| 预实验 (n = 5/cell) | 2026-09 |
-| 正式数据收集 | 2026-10 至 2026-12 |
-| 验证性分析 | 2027-01 |
-| Stage 2 完整论文 | 2027-02 |
+## 12. 时间线（保持 v0.1）
 
-## 11. 利益冲突
+- 2026-07-22 → 2026-08-15：Stage 1 内部审阅 + 修订（当前）
+- 2026-08-15 → 2026-09-01：OSF 预登记冻结
+- 2026-09-01 → 2026-09-15：AAMAS 2027 RR 通道投稿
+- 2026-09 → 2026-10：pilot（n=3/cell）
+- 2026-10 → 2026-12：正式数据收集
+- 2027-01 → 2027-02：Stage 2 完整论文
 
-作者未声明任何可能影响本研究的利益冲突。计算资源由所在机构提供。
+## 13. 公开数据
 
-## 12. 签名
+- 代码：MIT
+- 数据（脱敏后）：CC-BY-4.0
+- 预注册（冻结版）：CC-BY-4.0
+- LMM 详细输出：CC-BY-4.0
+- 失败归因标签：CC-BY-4.0
 
-- 主要研究者：
-- 共同作者：
-- 日期：
+---
+
+**End of pre-registration. Frozen on Stage 1 acceptance.**
+
+**主要修订（v0.1 → v0.2）**：
+1. 7 模型 → 3 模型（专注闭源 + 1M 上下文主力）
+2. 引入"长度操纵"作为第 4 正交维度
+3. 3 任务正交化（决策 / 记忆 / 推理各覆盖一种机制）
+4. 4 状态视图反事实（排除 context rot）
+5. 失败归因 schema（次要 outcome）
+6. 8 机制加对抗控制（oracle / adversarial feedback）
+7. 重复数从 ≥20 降到 3（Vending-Bench 方差大，3 seed 提供 IQR）
+8. 预算重算与时间线同步
