@@ -46,7 +46,8 @@
 | 统计骨架 | 完成 + 通过烟雾测试 |
 | 烟雾测试 | 完成 |
 | Pilot 链路验证 | 完成（3 模型 × 2 条件批量跑通）|
-| GitHub 仓库 | 待创建 |
+| GitHub 仓库 | ✅ 已推送（main + 4 commits + v0.1-pre-reg 标签）|
+| GitHub Release | ⏳ 需手动在网页创建（Release API 无权限）|
 | OSF 项目 | 待创建 |
 | 真实 API 数据 | 待启动（需要有效 DeepSeek key）|
 
@@ -110,13 +111,9 @@ python analysis_skeleton.py --csv pilot/collected_trajectories.csv --out pilot/r
 ### 发布到 GitHub
 
 ```bash
-export GITHUB_USER=yourname
-# 在 https://github.com/new 创建空仓库 echo-chambers-of-one（不要勾 README / .gitignore）
-bash scripts/publish_to_github.sh
-
-# 创建 Release
-export GITHUB_TOKEN=ghp_xxx
-bash scripts/create_github_release.sh
+# 已通过 SSH 推送 main + 标签；Release 需手动在 GitHub 网页从 v0.1-pre-reg 标签创建
+# https://github.com/aidless/echo-chambers-of-one/releases/new
+# 粘贴 RELEASE_NOTES_v0.1-pre-reg.md 内容，勾 Set as a pre-release，Publish
 ```
 
 ### 发布到 OSF
