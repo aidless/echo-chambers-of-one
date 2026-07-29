@@ -1,31 +1,44 @@
 {
-  "$schema": "https://osf.io/echo-chambers-of-one/manifest-v0.2",
-  "version": "0.2",
-  "preregistration_date": "2026-07-23",
-  "preregistration_version": "v0.2 (post deep literature review)",
+  "$schema": "https://osf.io/echo-chambers-of-one/manifest-v0.4",
+  "version": "0.4",
+  "preregistration_date": "2026-07-29",
+  "preregistration_version": "v0.4 (3rd literature review: models + ethics + OSF)",
   "project_title": "Echo Chambers of One: A Causal Test of Interaction Deprivation on Long-Horizon State Stability in Language Agents",
   "models": [
     {
-      "id": "deepseek-v4-flash",
-      "family": "deepseek",
-      "open_source": false,
-      "context_k": 1024,
-      "thinking_default": true,
-      "note": "主力长上下文模型，1M context，1M context 不可用时回退 128K"
-    },
-    {
-      "id": "claude-sonnet-4",
+      "id": "claude-sonnet-4.6",
       "family": "claude",
       "open_source": false,
-      "context_k": 200,
-      "note": "闭源 baseline；用于 contrast with long-context model"
+      "context_k": 1024,
+      "note": "闭源主力 baseline（性价比优于 Opus 4.7）"
     },
     {
-      "id": "gpt-4o",
+      "id": "claude-opus-4.7",
+      "family": "claude",
+      "open_source": false,
+      "context_k": 1024,
+      "note": "闭源天花板对照"
+    },
+    {
+      "id": "gpt-5",
       "family": "gpt",
       "open_source": false,
-      "context_k": 128,
-      "note": "闭源 baseline；强工具调用"
+      "context_k": 256,
+      "note": "OpenAI 高端（routing 模式）；取代 v0.3 GPT-4o"
+    },
+    {
+      "id": "deepseek-v4-flash",
+      "family": "deepseek",
+      "open_source": true,
+      "context_k": 1024,
+      "note": "开源锚 + 1M context 主力；thinking 模式作为受控变量"
+    },
+    {
+      "id": "qwen3-235b-thinking",
+      "family": "qwen",
+      "open_source": true,
+      "context_k": 1024,
+      "note": "开源 reasoning 锚；thinking 模式作为受控变量"
     }
   ],
   "tasks": [
@@ -111,11 +124,13 @@
     "id": "length",
     "values": ["4k", "32k", "128k", "max"],
     "max_per_model": {
+      "claude-sonnet-4.6": "1M",
+      "claude-opus-4.7": "1M",
+      "gpt-5": "256K",
       "deepseek-v4-flash": "1M",
-      "claude-sonnet-4": "200K",
-      "gpt-4o": "128K"
+      "qwen3-235b-thinking": "1M"
     },
-    "note": "orthogonal dimension added in v0.2 to control context rot"
+    "note": "orthogonal dimension added in v0.2 to control context rot; v0.4 max values updated to current model API limits"
   },
   "checkpoints": [0, 100, 500, 1000, 2000, 5000, 10000],
   "seeds": [11, 22, 33],
@@ -158,14 +173,15 @@
     "attribution": ["planning_failure_rate", "memory_loss_rate", "historical_error_accumulation_rate"]
   },
   "design_summary": {
-    "models": 3,
+    "models": 5,
     "lengths": 4,
     "conditions": 6,
     "tasks": 3,
     "seeds": 3,
-    "total_cells": 648,
-    "total_trajectories": 1944,
-    "v0_1_summary": "7 models x 6 conditions x 3 tasks x >=20 repetitions = 2520 cells (revised for context-rot control)"
+    "total_cells": 1080,
+    "total_trajectories": 3240,
+    "v0_3_summary": "3 models x 4 lengths x 6 conditions x 3 tasks x 3 seeds = 648 cells (revised for cost control)",
+    "v0_4_summary": "5 models (added Claude Opus 4.7 + GPT-5 + Qwen3-235B-Thinking as open-source anchor + thinking controlled variable)"
   },
   "exclusion_rules": [
     "trajectories with API failure rate > 20% are removed and replaced",
@@ -183,18 +199,20 @@
     {"trigger": "3-task interaction model fails to converge", "action": "fall back to per-task LMM, report each separately"}
   ],
   "budget_estimate": {
-    "total_trajectories": 1944,
+    "total_trajectories": 3240,
     "tokens_per_trajectory": 2000000,
-    "total_tokens_billion": 3.89,
+    "total_tokens_billion": 6.48,
     "cost_breakdown": {
-      "deepseek_v4_flash_cache_hit": {"fraction": 0.7, "rate_per_million": 0.0028, "usd": 7.6},
-      "deepseek_v4_flash_cache_miss": {"fraction": 0.1, "rate_per_million": 0.14, "usd": 54.4},
-      "claude_sonnet_4": {"fraction": 0.1, "rate_per_million": 3.0, "usd": 1170},
-      "gpt_4o": {"fraction": 0.1, "rate_per_million": 2.5, "usd": 970}
+      "deepseek_v4_flash_cache_hit": {"fraction": 0.5, "rate_per_million": 0.0028, "usd": 9.1},
+      "deepseek_v4_flash_cache_miss": {"fraction": 0.1, "rate_per_million": 0.14, "usd": 90.7},
+      "qwen3_235b_thinking": {"fraction": 0.1, "rate_per_million": 0.6, "usd": 388.8},
+      "claude_sonnet_4_6": {"fraction": 0.1, "rate_per_million": 3.0, "usd": 1944},
+      "claude_opus_4_7": {"fraction": 0.05, "rate_per_million": 15.0, "usd": 4860},
+      "gpt_5": {"fraction": 0.15, "rate_per_million": 2.5, "usd": 2430}
     },
-    "total_usd_low": 1500,
-    "total_usd_high": 2500,
-    "note": "with full 10000-step horizon and anthropic caching; lower if reduce to 5000 steps"
+    "total_usd_low": 2500,
+    "total_usd_high": 4500,
+    "note": "v0.4 budget with 5 models; Claude Opus 4.7 is the biggest cost driver; can drop Opus to lower to $2000-$3000"
   },
   "timeline": {
     "stage_1_internal_review": "2026-07-22 to 2026-08-15",
@@ -213,5 +231,15 @@
     "8 anti-degradation mechanisms now have adversarial controls (oracle / adversarial feedback)",
     "repetitions reduced from >=20 to 3 (Vending-Bench reports large run-to-run variance)",
     "budget re-estimated at $1500-$2500 (was $200-$500); longer context with Anthropic caching"
+  ],
+  "v0_3_to_v0_4_changes": [
+    "3 models -> 5 models (added Claude Opus 4.7 as ceiling + GPT-5 as OpenAI high-end + Qwen3-235B-Thinking as open-source reasoning anchor)",
+    "DeepSeek V4 Flash reclassified as open-source (was closed-source in v0.3 manifest, but V4-Flash is the open-source 1M-context workhorse)",
+    "models 5 x 4 lengths x 6 conditions x 3 tasks x 3 seeds = 1080 cells, 3240 trajectories (was 648 cells, 1944 trajectories)",
+    "added Section 15 Ethics & IRB: 5 mandatory fields (IRB approval, compensation, data protection, dual use, disclosure)",
+    "added Section 16 PRISMA 2020 + CONSORT-AI mapping",
+    "added Section 17 OSF project structure + 5 COS Open Science Badges application plan",
+    "added Section 18 Internal Validity (NeurIPS 2024+ Reproducibility Checklist 5 dimensions)",
+    "budget re-estimated at $2500-$4500 (was $1500-$2500); Claude Opus 4.7 is the biggest cost driver"
   ]
 }

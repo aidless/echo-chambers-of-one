@@ -1,10 +1,10 @@
-# Echo Chambers of One — Preregistration v0.3
+# Echo Chambers of One — Preregistration v0.4
 
-> 状态：Stage 1 预注册 · 第二轮修订
+> 状态：Stage 1 预注册 · 第三轮修订
 > 修订日期：2026-07-29
-> 修订来源：`LITERATURE_REVIEW_v2.md` 第二轮深挖（方法论 + 工程 + Judge 设计）
-> 配套：`LITERATURE_REVIEW.md`（v0.1→v0.2 第一轮）+ `LITERATURE_REVIEW_v2.md`（v0.2→v0.3 第二轮）
-> 相比 v0.2 增量：§6.5 judge 协议；§7 主分析用 Westfall-Young 主+Holm sensitivity；§10 偏离预案 7→10 类；§12 工程稳健性 6 条。
+> 修订来源：`LITERATURE_REVIEW_v3.md` 第三轮深挖（模型选型 + 伦理 + OSF 报告规范）
+> 配套：`LITERATURE_REVIEW.md`（v0.1→v0.2）+ `LITERATURE_REVIEW_v2.md`（v0.2→v0.3）+ `LITERATURE_REVIEW_v3.md`（v0.3→v0.4）
+> 相比 v0.3 增量：§3.1 模型从 3 个扩到 5 个（含开源锚 + thinking 受控变量）；新增 §15 伦理与 IRB；新增 §16 PRISMA 2020 章节映射；新增 §17 OSF 项目结构。
 
 ---
 
@@ -29,13 +29,13 @@
 
 | 维度 | 值 | 备注 |
 |---|---|---|
-| 模型 | **3**：`deepseek-v4-flash`、`claude-sonnet-4`、`gpt-4o` | 闭源 + 长上下文主力；从 v0.1 的 7 模型缩减以控制预算 |
-| 长度 | **4**：`4K`、`32K`、`128K`、模型上限（V4 Flash 为 1M）| 新增正交维度；强制 6 条件在 cell 内 token 总数等价 |
+| 模型 | **5**（v0.4 修订）：claude-sonnet-4.6、claude-opus-4.7、gpt-5、deepseek-v4-flash、qwen3-235b-thinking | 闭源 3 + 开源 2；含 1M context 主力 + 天花板对照 + thinking 受控变量 |
+| 长度 | **4**：`4K`、`32K`、`128K`、模型上限（V4 Flash / Sonnet / Opus / Qwen3 为 1M；GPT-5 为 256K）| 新增正交维度；强制 6 条件在所有 cell 内 token 总数等价 |
 | 条件 | **6**：`control_stateless` / `isolated` / `novelty` / `feedback` / `peer` / `human` | 保持 v0.1 |
 | 任务 | **3**：Vending-Bench 风格 / LongMemEval 风格 / HELMET 风格长上下文推理 | 每任务覆盖一种假设机制 |
 | 重复 | **3 seeds** | Vending-Bench 报告 run-to-run 方差极大，3 seed 提供 IQR |
 
-**正式 cell 数** = 3 × 4 × 6 × 3 × 3 = **648 cell**，总计 1944 轨迹。
+**正式 cell 数** = 5 × 4 × 6 × 3 × 3 = **1080 cell**，总计 **3240 轨迹**。
 
 ### 3.2 任务正交化（修订关键点）
 
@@ -210,6 +210,112 @@ y_{i,t} = β0 + β1·log(1+t) + β2·C_c + β3·log(1+t)×C_c
 - LMM 详细输出：CC-BY-4.0
 - 失败归因标签：CC-BY-4.0
 
+## 15. 伦理与 IRB（v0.4 新增）
+
+本研究含 1 个"human"条件（Prolific 招募 n=20）与 1 个"human_validation"（≥50 人工双盲）真人参与环节，按 NeurIPS 2025 Code of Ethics 与 Stanford ESR 流程，预先承诺 5 项伦理字段：
+
+### 15.1 IRB approval statement
+"本研究的真人参与环节已向 [University] IRB 提交申请。Stage 1 数据采集启动前必须获得 approved 或 exempt 状态。预注册阶段写明 'IRB submission pending, expected approval by [date]'。"
+
+### 15.2 Compensation & Fair Wage
+- `human` 条件（n=20）：Prolific 招募，每场 30–45 min，**$15/h**（保守高于 Prolific 最低 $12/h 符合 NeurIPS 2025 "fair wages" 精神）+ 公平奖励金 $1–3
+- `human_validation`（n≥50）：每条 6–10 min，**$18/h**（接近专业标注市场水平）
+
+### 15.3 Data protection & Privacy plan
+- **法规对标**：GDPR Art. 89 + UK GDPR + 中国《个人信息保护法》第 13、27 条
+- **伪匿名化**：去除姓名 / 邮箱 / IP / 地理位置 / 设备 ID
+- **数据保留 ≤ 2 年**；按 PIPL/GDPR 执行数据主体权利
+- **不在公开 artifacts 中发布任何 PII**
+
+### 15.4 Dual Use Risk Assessment
+Stage 2 论文应包含 ≤ 1 页 "Dual Use & Mitigations" 子节：
+1. Isolation ablation 可被误读的对抗面（揭示 agent 弱点→构造 jailbreak）
+2. Stage 2 论文 red-team 计划（isolation 修复的 prompt injection 绕过测试）
+3. 不发布 agent 完整 system prompt 的策略
+
+### 15.5 Responsible Disclosure Protocol
+若 Stage 1 发现严重 agent 安全/对齐问题，按 [Anthropic Responsible Disclosure Policy](https://www.anthropic.com/responsible-disclosure-policy) 私下通报（90 天）后再公开展示；failure cases 删除任何可被复制利用的 prompt 注入示例。
+
+依据：[NeurIPS 2025 Code of Ethics](https://neurips.cc/public/EthicsGuidelines)、[Stanford ESR](https://casbs.stanford.edu/our-work/ethics-and-society-review)、[Prolific Pricing](https://www.prolific.com/pricing)、[EU AI Act Article 27](https://eur-lex.europa.eu/eli/reg/2024/1689/oj)。
+
+## 16. PRISMA 2020 章节映射（v0.4 新增）
+
+按 [PRISMA 2020 (Page et al. BMJ 2021)](https://doi.org/10.1136/bmj.n71) 与 [CONSORT-AI / SPIRIT-AI](https://doi.org/10.1136/bmj.m3210)，本研究章节映射：
+
+| PRISMA Item | 对应本研究章节 | 实施阶段 |
+|---|---|---|
+| 1. Title | `paper_outline.md` §1 | Stage 1 |
+| 2. Abstract（结构化）| `paper_outline.md` §2 | Stage 1 + Stage 2 |
+| 3. Rationale | `paper_outline.md` §3 | Stage 1 |
+| 4. Objectives / PICOS | 本文档 §1–2 | Stage 1 |
+| 5–6. Search strategy | 不适用（不涉及文献检索）| — |
+| 7. Inclusion criteria | 本文档 §4（cell 准入）| Stage 1 |
+| 8–10. Sources / Search | 不适用 | — |
+| 11–12. Data items / Risk of bias | `LITERATURE_REVIEW.md` / `LITERATURE_REVIEW_v2.md` | Stage 1 |
+| 13. Synthesis methods | 本文档 §7 | Stage 1 |
+| 14–17. Reporting | `paper_outline.md` §4 | Stage 2 |
+| 18. Risk of bias in studies | 见下文 §18 Internal Validity | Stage 2 |
+| 19. Subgroup analyses | `experiment_manifest.json` `state_view_counterfactuals` | Stage 2 |
+| 20–22. CERQual / Summary of evidence | Stage 2 报告 | Stage 2 |
+| 23–25. Limitations / Conclusions | `paper_outline.md` §6 | Stage 2 |
+| 26. Funding | 新增 §19 Funding & Registration | Stage 1 |
+| 27. Registration (OSF DOI) | OSF Registration DOI | Stage 1 |
+
+**CONSORT-AI 必含项**：LLM 版本（claude-sonnet-4.6 / claude-opus-4.7 / gpt-5 / deepseek-v4-flash / qwen3-235b-thinking 钉死）、prompt 模板（公开在 `code/`）、tool calling schema（公开在 `code/`）、human-AI interaction 协议（`human` 条件）、错误案例分析（Stage 2 失败归因）。
+
+## 17. OSF 项目结构 + COS Badges（v0.4 新增）
+
+### 17.1 OSF 项目结构
+
+```
+echo-chambers-of-one/
+├── docs/           ← preregistration.md, paper_outline.md, RELEASES
+├── data/raw/       ← trajectories（CC-BY 4.0）
+├── data/agg/       ← aggregated metrics (CC0)
+├── code/           ← analysis + scripts (MIT)
+├── env/            ← Dockerfile + requirements.txt
+├── wiki/           ← 变更日志、决策记录、可视化
+└── registrations/  ← Stage 1 IPA 时间戳 + DOI
+```
+
+**OSF Registration 模板**：**Open-Ended Registration**（[OSF Help](https://help.osf.io/article/1454-preregistration-templates)），因 1080 cell 因式 + 10 类预案无法填 Standard 模板。DOI 通过 Add-on 4.0 单独为 Registration 申请。
+
+### 17.2 COS Open Science Badges 申请计划
+
+依据 [COS Open Science Badges](https://www.cos.io/our-services/badges)：
+
+| Badge | 申请时间 | 状态 |
+|---|---|---|
+| **Preregistered** | OSF Registration 完成时 | Stage 1 |
+| **Preregistered + Analysis Plan** | Stage 1 包含 10 类预案 + 主分析路径 | Stage 1 |
+| **Open Data** | Stage 2 投稿前 | Stage 2 |
+| **Open Materials** | Stage 2 投稿前 | Stage 2 |
+| **Registered Report** | 期刊（AAMAS / JAAMAS / FAccT）接收 Stage 1 IPA 后 | 期刊决定 |
+
+申请方式：投稿时在 disclosure statement 勾选（[osf.io/5fndw](https://osf.io/5fndw/) 模板）。
+
+## 18. Internal Validity
+
+按 PRISMA Item 18 与 NeurIPS 2024+ Reproducibility Checklist 5 分项：
+
+| 维度 | 措施 |
+|---|---|
+| Code | MIT 公开 + 钉 commit hash |
+| Model | 5 模型 + 钉版本号 + temperature + max_tokens |
+| Data | raw + agg 公开 + 隐私脱敏 |
+| Environment | `Dockerfile` + `requirements.txt` 钉死 |
+| Training/Inference | 随机种子 11/22/33 + thread pool 钉死 + Judge 协议（见 §6.5）|
+
+**Judge ensemble** 多次交叉验证（3 源异源 + position-swap + Bradley-Terry 聚合）保证标签质量。
+
+## 19. Funding & Registration
+
+- **Funding**：待填写（建议声明无任何模型供应商资助以保持独立性）
+- **Registration**：[OSF Project DOI](https://osf.io/echo-chambers-of-one/)（待创建）
+- **GitHub**：https://github.com/aidless/echo-chambers-of-one
+
+---
+
 ---
 
 **End of pre-registration. Frozen on Stage 1 acceptance.**
@@ -230,3 +336,11 @@ y_{i,t} = β0 + β1·log(1+t) + β2·C_c + β3·log(1+t)×C_c
 3. **§7 ablation 检验**：单独 8 检验 → **emmeans `joint_tests()` omnibus**（预算 8×N → 8）
 4. **§10 偏离预案**：7 类 → **10 类**（加 replicate < planned、主分析失败 fallback、peeking 触发）
 5. **§13 工程稳健性承诺（新增）**：6 条工程细节（cost-aware scheduler / cache routing / OpenTelemetry schema / 断点续跑 / Sonnet 4 thinking 审计 / gpt-4o 滚动窗口）
+
+**主要修订（v0.3 → v0.4）**：
+1. **§3.1 模型 3 → 5**：加 Claude Opus 4.7（天花板对照）+ GPT-5（OpenAI 高端）+ Qwen3-235B-Thinking（开源 reasoning 锚）；thinking 模式作为受控变量；cell 数 648 → 1080，轨迹 1944 → 3240
+2. **§15 伦理与 IRB（新增）**：5 段（IRB approval statement、Compensation、Data protection、Dual Use、Disclosure）
+3. **§16 PRISMA 2020 章节映射（新增）**：27 项 + CONSORT-AI 必含
+4. **§17 OSF 项目结构 + COS Badges（新增）**：标准文件夹树 + Open-Ended Registration + 5 枚 Badge 申请计划
+5. **§18 Internal Validity（新增）**：NeurIPS 2024+ Reproducibility Checklist 5 分项
+6. **§19 Funding & Registration（新增）**：OSF DOI + GitHub URL
