@@ -1,9 +1,10 @@
-# Echo Chambers of One — Preregistration v0.2
+# Echo Chambers of One — Preregistration v0.3
 
-> 状态：Stage 1 预注册 · 修订版
-> 修订日期：2026-07-23
-> 修订原因：v0.1-pre-reg 深度文献调研（LITERATURE_REVIEW.md）发现 5 个必须修订的设计盲点；本版本融合修订。
-> 与 LITERATURE_REVIEW.md 配套阅读。
+> 状态：Stage 1 预注册 · 第二轮修订
+> 修订日期：2026-07-29
+> 修订来源：`LITERATURE_REVIEW_v2.md` 第二轮深挖（方法论 + 工程 + Judge 设计）
+> 配套：`LITERATURE_REVIEW.md`（v0.1→v0.2 第一轮）+ `LITERATURE_REVIEW_v2.md`（v0.2→v0.3 第二轮）
+> 相比 v0.2 增量：§6.5 judge 协议；§7 主分析用 Westfall-Young 主+Holm sensitivity；§10 偏离预案 7→10 类；§12 工程稳健性 6 条。
 
 ---
 
@@ -84,9 +85,31 @@
 
 作为次要 outcome，配合 H1/H2/H5 的检验。
 
+### 6.5 Judge 协议（v0.3 新增）
+
+为避免 self-preference / position / verbosity 等系统性偏差，**预先承诺**以下元数据：
+
+| 元数据 | 预承诺值 |
+|---|---|
+| Judge 主模型 | **Claude Sonnet 4**（与 agent 异源）|
+| Judge 二号 | **DeepSeek-V3 Flash**（价格敏感，异源）|
+| Judge 三号 | **Prometheus-2-7B**（专用 judge，2024 EMNLP）|
+| 聚合方式 | weighted majority + Bradley-Terry 后处理 |
+| Position 协议 | swap-and-average，每条 2 次随机化顺序 |
+| Self-consistency | K=5 重复，主类一致率 ≥ 0.80 |
+| Ensemble 一致性 | Krippendorff's α ≥ 0.667 |
+| Few-shot 数量 | 8（来自人工 gold 集，**非**自 H5 待标注集）|
+| Gold 集规模 | ≥ 50 人工双盲标注 |
+| Anchor reference | 每条待标注旁附 1+ / 1- 失败归因示例 |
+| **禁止配置** | Judge 与 Agent 同模型 + 同供应商；prompt 共享 > 30%；agent 自评做 gold |
+
+依据：[Zheng et al. 2023 MT-Bench](https://arxiv.org/abs/2306.05685)、[Survey Gu 2024](https://arxiv.org/abs/2411.15594)、[Verga 2024 PoLL](https://arxiv.org/abs/2404.18796)、[Kim 2024 Prometheus 2](https://arxiv.org/abs/2405.01535)。
+
+Stage 2 必报告：per-class precision/recall/F1、Cohen's κ、Krippendorff's α、self-consistency rate、position-swap disagreement rate、confusion matrix（planning ↔ memory 撞标签率）、per-1k-trajectory judge cost。
+
 ## 7. 主分析
 
-纵向 LMM（与 v0.1 一致，但加入新交互）：
+纵向 LMM：
 
 ```
 y_{i,t} = β0 + β1·log(1+t) + β2·C_c + β3·log(1+t)×C_c
@@ -98,10 +121,15 @@ y_{i,t} = β0 + β1·log(1+t) + β2·C_c + β3·log(1+t)×C_c
 - **核心检验**：
   - H1: β3 < 0 对 isolated（reference = feedback）
   - H2: β3 比较 feedback vs novelty
-  - H3: β6 显著（交互项）
+  - H3: β6 显著
 - **随机效应**：model, task, seed
-- **回退链**：LMM → GEE (independence) → OLS（同 v0.1）
-- **保护断言**：`n_groups < 5` → 直接 OLS（已在 analysis_skeleton.py 实现）
+- **回退链**：LMM → GEE (independence) → brms（half-Cauchy 弱先验） → OLS
+- **保护断言**：`n_groups < 5` → 直接 OLS
+- **多重比较（v0.3 修订）**：
+  - **主分析** = **Westfall-Young step-down minP permutation**（multcomp `adjusted("Westfall")`），999 抽样；不需独立性假设，在 25 强相关假设下功效提升 20–30%
+  - **Sensitivity** = Holm-Bonferroni 分层校正（保留 v0.2 的方法作并列报告）
+  - 两者结论一致 → 强证据；不一致 → 报告二者并讨论
+- **8 ablation 检验方式（v0.3 修订）**：emmeans `joint_tests()` omnibus χ²/F 检验，**多重比较预算从 8×N 降到 8**
 
 ## 8. 8 种反退化机制（消融子实验）
 
@@ -127,17 +155,20 @@ y_{i,t} = β0 + β1·log(1+t) + β2·C_c + β3·log(1+t)×C_c
 - 环境崩溃导致的轨迹剔除并替换
 - **不**基于性能排除
 
-## 10. 偏离预案（扩充）
+## 10. 偏离预案（v0.3 扩到 10 类）
 
 | 情况 | 处理 |
 |---|---|
-| LMM 随机效应协方差奇异 | LMM → GEE → OLS 三级回退（已实现）|
+| LMM 随机效应协方差奇异 | LMM → GEE (indep) → brms (half-Cauchy) → OLS 四级回退 |
 | `n_groups < 5` per cell | 直接 OLS（保护断言）|
 | API 失败率 > 20% | 整 cell 剔除 + 报告 |
-| Holm 校正后全阴性 | 报告"无效应"；附 BH-FDR |
+| 主校正（Westfall-Young）后全阴 | 报告"无效应"；附 Holm 作 sensitivity |
 | DeepSeek V4 Flash 1M context 不可用 | 退回 128K 长度 |
-| **新增**：self-talk 在无 oracle 反馈时反向 | 改测 semantic compression + independent critic 双因素 |
-| **新增**：3 任务间交互模型不收敛 | 退到分任务 LMM，逐任务报告 |
+| self-talk 在无 oracle 反馈时反向 | 改测 semantic compression + independent critic 双因素 |
+| 3 任务间交互模型不收敛 | 退到分任务 LMM，逐任务报告 |
+| **v0.3 新增**：replicate < 计划数 | 报 post-hoc power；标记 `underpowered` |
+| **v0.3 新增**：主分析失败 fallback | 退回分任务 LMM；主次分析并行报告 |
+| **v0.3 新增**：peeking 触发 | 报告 peeking 时间点；切换 Bayesian sequential stopping plan（v0.4）|
 
 ## 11. 算力预算（重算）
 
@@ -160,7 +191,18 @@ y_{i,t} = β0 + β1·log(1+t) + β2·C_c + β3·log(1+t)×C_c
 - 2026-10 → 2026-12：正式数据收集
 - 2027-01 → 2027-02：Stage 2 完整论文
 
-## 13. 公开数据
+## 13. 工程稳健性承诺（v0.3 新增）
+
+依据 [OpenAI Cookbook](https://github.com/openai/openai-cookbook/blob/main/examples/api_request_parallel_processor.py) + [Anthropic Prompt Caching](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching) + [OpenTelemetry GenAI semconv](https://github.com/open-telemetry/semantic-conventions-genai)，预先承诺：
+
+1. **Cost-aware scheduler**：`CellSpec.max_dollars_per_cell`；累计 `usage.*.billed_cost` 实时计费；超限立即停跑
+2. **统一 trace schema**：内层 raw provider 数据（OpenAI `usage.prompt_tokens_details.cached_tokens`、Anthropic `usage.cache_read_input_tokens`、DeepSeek `prompt_cache_hit_tokens`）+ 外层 OpenTelemetry GenAI semconv 投影
+3. **Cache routing**：`prompt_cache_key` 绑定 `condition_id + model_id`（如 `ec_001_iso_ds4f`），**不**绑 `seed_id` → 同 cell 3 共享前缀 → 命中率 ≥ 80%
+4. **断点续跑**：每 checkpoint 0/100/500/.../10000 后立即刷盘 + 写 sha256 sidecar
+5. **Sonnet 4 thinking 预算审计**：用 `usage.output_tokens` 单独统计；超 1.5× buffer 标 `degraded_budget`
+6. **gpt-4o 滚动窗口压缩**：每 1000 步抽取 summary，避免 200K 后 truncate
+
+## 14. 公开数据
 
 - 代码：MIT
 - 数据（脱敏后）：CC-BY-4.0
@@ -181,3 +223,10 @@ y_{i,t} = β0 + β1·log(1+t) + β2·C_c + β3·log(1+t)×C_c
 6. 8 机制加对抗控制（oracle / adversarial feedback）
 7. 重复数从 ≥20 降到 3（Vending-Bench 方差大，3 seed 提供 IQR）
 8. 预算重算与时间线同步
+
+**主要修订（v0.2 → v0.3）**：
+1. **§7 主分析**：Holm-Bonferroni → **Westfall-Young step-down minP permutation 主 + Holm sensitivity**；回退链加 brms 一级（4 级回退）
+2. **§6.5 Judge 协议（新增）**：Claude Sonnet 4 + DeepSeek-V3 + Prometheus-2-7B 三源 ensemble；position-swap；Krippendorff's α ≥ 0.667；self-consistency ≥ 0.80；Bradley-Terry 聚合
+3. **§7 ablation 检验**：单独 8 检验 → **emmeans `joint_tests()` omnibus**（预算 8×N → 8）
+4. **§10 偏离预案**：7 类 → **10 类**（加 replicate < planned、主分析失败 fallback、peeking 触发）
+5. **§13 工程稳健性承诺（新增）**：6 条工程细节（cost-aware scheduler / cache routing / OpenTelemetry schema / 断点续跑 / Sonnet 4 thinking 审计 / gpt-4o 滚动窗口）
