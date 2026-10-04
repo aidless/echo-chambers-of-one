@@ -1,4 +1,5 @@
 # Echo Chambers of One
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)  [![Data](https://img.shields.io/badge/data-CC--BY--4.0-lightgrey.svg)](LICENSE)
 
 > 项目代号：`echo-chambers-of-one`
 > 当前版本：`v0.4-pre-reg`（第三轮文献调研修订，2026-07-29）
