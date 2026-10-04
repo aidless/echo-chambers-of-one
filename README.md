@@ -1,11 +1,11 @@
 # Echo Chambers of One
 
 > 项目代号：`echo-chambers-of-one`
-> 当前版本：`v0.2-pre-reg`（深度文献调研后修订，2026-07-23）
+> 当前版本：`v0.4-pre-reg`（第三轮文献调研修订，2026-07-29）
 > GitHub 仓库：https://github.com/aidless/echo-chambers-of-one
 > OSF 项目：https://osf.io/echo-chambers-of-one/（待创建）
 > 主文档：[`research_proposal.html`](research_proposal.html)
-> 预注册 v0.2：[`preregistration.md`](preregistration.md)
+> 预注册 v0.4：[`preregistration.md`](preregistration.md)
 > 深度调研：[`LITERATURE_REVIEW.md`](LITERATURE_REVIEW.md)
 
 研究"外源交互剥夺"对长程有状态语言智能体稳定性的因果作用。把"Agent 孤独感"从一个传播比喻改写为可检验的工程变量。
@@ -17,11 +17,11 @@
 ├── README.md                       # 项目总入口（本文件）
 ├── LICENSE                         # MIT 代码 + CC-BY-4.0 文档双重协议
 ├── RELEASE_NOTES_v0.1-pre-reg.md   # GitHub Release 说明
-├── LITERATURE_REVIEW.md            # 2025-2026 深度文献调研（v0.2 修订依据）
+├── LITERATURE_REVIEW.md            # 2025-2026 深度文献调研（v0.1→v0.4 三轮，见 _v2/_v3）
 ├── OSF_UPLOAD_CHECKLIST.md         # OSF 上传清单
 ├── research_proposal.html          # 正式 RR Stage 1 研究方案
-├── preregistration.md              # OSF 预注册 v0.2（含修订说明）
-├── experiment_manifest.json        # 完整实验网格 v0.2
+├── preregistration.md              # OSF 预注册 v0.4（含修订说明）
+├── experiment_manifest.json        # 完整实验网格 v0.4
 ├── analysis_skeleton.py            # 统计骨架（LMM → GEE → OLS）
 ├── paper_outline.md                # Stage 1 论文大纲 v0.2
 ├── cover_letter.md                 # 投稿信 + 评审质疑响应
@@ -39,12 +39,12 @@
 └── pilot/                          # 预实验脚手架
 ```
 
-## 当前状态（v0.2）
+## 当前状态（v0.4）
 
 | 阶段 | 状态 |
 |---|---|
 | 研究方案 | 完成（HTML）|
-| 预注册文档 | ✅ v0.2 修订版（融合 5 个文献调研修订点）|
+| 预注册文档 | ✅ v0.4 修订版（三轮修订；v0.4 增量：模型 3→5、新增伦理与 IRB / PRISMA 2020 / OSF 结构章节）|
 | 实验清单 | ✅ v0.2（3 模型 × 4 长度 × 6 条件 × 3 任务 × 3 重复 = 648 cell / 1944 轨迹）|
 | 统计骨架 | 完成 + 通过烟雾测试 |
 | 烟雾测试 | 完成 |
