@@ -65,6 +65,10 @@ python -m pip install --upgrade pip setuptools wheel
 python -m pip install pandas numpy statsmodels scipy scikit-learn matplotlib ruptures lifelines openai anthropic
 ```
 
+- Python 版本：CI 在 **3.12** 上运行（`.github/workflows/ci.yml`）。
+- 最小依赖（仅烟雾测试 + 统计骨架）：`pandas numpy statsmodels scipy scikit-learn`；`analysis_skeleton.py` 的变点检测在未安装 `ruptures` 时自动跳过（try/except，见 `analysis_skeleton.py` 的 `detect_change_points`）。
+- Seed 策略：`pilot/run_pilot.py --seed`（默认 11），同一 seed 同时传给 `VendingEnv(seed=seed)` 和 LLM 客户端（`pilot/runner.py`），Mock 回退路径是确定性随机。
+
 ### 2. 烟雾测试（无需 API 密钥）
 
 ```bash
@@ -89,6 +93,17 @@ python analysis_skeleton.py --csv pilot/collected_trajectories.csv --out pilot/r
 ```
 
 无密钥或凭据失效时自动回退到 `MockClient`（确定性随机），并在 `pilot/outputs/<model>__<task>__<condition>__seed<seed>__<timestamp>.json` 留下轨迹日志。
+
+## 数据与结果可用性
+
+本仓库处于预注册阶段（v0.4），**不含真实 API 实验数据**（与上方状态表一致）。现有结果文件的来源：
+
+| 结果文件 | 生成方式 | 原始数据 |
+|---|---|---|
+| `smoke_test/results/`（`lmm_results.json`、`interaction_tests.csv`、`failure_clusters.csv`）| 快速开始第 2 步的两条命令重新生成（已实测通过）| `smoke_test/generate_synthetic_trajectories.py` 合成 |
+| `pilot/results/`（同名三件套）| `python pilot/collect_outputs.py` 后对收集的 CSV 跑 `analysis_skeleton.py` | `pilot/collected_trajectories.csv` 与 `pilot/outputs/` 轨迹**未提交**（链路验证为 Mock 模式，见 `pilot/PILOT_REPORT.md`）|
+
+正式实验数据采集待 DeepSeek key 就绪后启动；OSF 项目创建后在此处补 DOI 与数据归档链接。预注册文本 [`preregistration.md`](preregistration.md)（v0.4）为冻结快照，修订历史见文内修订说明。
 
 ## 关键设计决策（v0.2）
 
