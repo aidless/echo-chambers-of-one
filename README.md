@@ -94,6 +94,44 @@ python analysis_skeleton.py --csv pilot/collected_trajectories.csv --out pilot/r
 
 无密钥或凭据失效时自动回退到 `MockClient`（确定性随机），并在 `pilot/outputs/<model>__<task>__<condition>__seed<seed>__<timestamp>.json` 留下轨迹日志。
 
+### 4. 可复算性验证（2026-11-01 实测）
+
+```bash
+python smoke_test/generate_synthetic_trajectories.py   # 生成 2,268 行合成轨迹
+python analysis_skeleton.py --csv smoke_test/trajectories.csv \
+    --out smoke_test/results --reference isolated       # 拟合 LMM/回退 OLS，写结果
+```
+
+2026-11-01 实测：上述两条命令在本机跑通，生成 2,268 行、6 条件 × 均值输出，
+分析骨架完成 LMM→OLS 回退并写出 `lmm_results.json` / `interaction_tests.csv` /
+`failure_clusters.csv`。**注意数字非跨进程逐位稳定**（见下节"证明什么/不证明什么"）。
+
+## 证明什么 / 不证明什么
+
+**证明什么**：
+- 统计骨架（`analysis_skeleton.py`）在合成数据上端到端可运行，且按设计完成
+  LMM→GEE→OLS 三级回退（合成轨迹跨 7 检查点、高度单调 → 随机截距奇异 →
+  自动降级 OLS，`REPORT.md` 第 2 节记录 `method = ols_fallback`）。
+- 6 条件 × 3 任务 × 3 种子 × 7 检查点 = 324 条合成轨迹、2,268 个观测，隔离组
+  在合成指标上具有最陡负斜率（设计意图，见生成器 docstring）。
+- pilot 链路（Mock 回退路径）端到端跑通，输出轨迹日志与评测分数。
+
+**不证明什么**：
+- 本仓库处于**预注册阶段（v0.4）**，**不含任何真实 API 实验数据**；正式实验
+  需有效 DeepSeek key 后启动（见状态表）。现有 `smoke_test/results/` 与
+  `pilot/results/` 均来自**合成数据 / Mock 客户端**，**不构成**对"外源交互剥夺
+  损害长程智能体"的经验证据。
+- 数字**非逐位可复现**：`generate_synthetic_trajectories.py` 的 `base_score()` 用
+  Python 内置 `hash()` 于字符串元组，而字符串哈希**按进程加盐**（`PYTHONHASHSEED`）。
+  实测：同一输入元组跨进程哈希 `3554875934` vs `3742153992`；因此重跑合成数据
+  会让 `lmm_results.json` 的系数/对数似然在最后几位漂移（本次重跑 accuracy
+  `cond_human_x_logstep` 由 `0.08674` → `0.08507`）。**这不是实验结论，是合成
+  数据生成器的确定性边界**——正式实验数据由真实 API 产生，不受此影响。
+- 烟雾测试只证明**骨架代码路径**通，不证明模型/条件差异的统计显著性
+  （合成数据按设计埋了斜率，显著性是设计产物不是发现）。
+- 统计骨架对合成轨迹回退到 OLS，真实实验轨迹变异更大时 LMM 才可能正常
+  收敛——本报告的方法选择不代表正式实验会走 OLS。
+
 ## 数据与结果可用性
 
 本仓库处于预注册阶段（v0.4），**不含真实 API 实验数据**（与上方状态表一致）。现有结果文件的来源：
