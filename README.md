@@ -132,6 +132,19 @@ python analysis_skeleton.py --csv smoke_test/trajectories.csv \
 - 统计骨架对合成轨迹回退到 OLS，真实实验轨迹变异更大时 LMM 才可能正常
   收敛——本报告的方法选择不代表正式实验会走 OLS。
 
+## 基准与 fail-closed（实测）
+
+**基准（合成验证，`smoke_test/results/`，实测跑出）**：
+- 2,268 个观测、324 条独立轨迹；隔离组平均 accuracy **0.236**（最低）、人类组 **0.782**（最高）。
+- 主交互 `cond_human_x_logstep` = **+0.0867**（Holm-Bonferroni 校正 `p < 0.001`），
+  5/5 个交互项全部为正——这是**合成数据的设计产物，不是发现**。
+- 实验设计网格 = 3 模型 × 6 条件 × 3 任务 × 4 长度 × 3 重复 = **648 cell / 1944 轨迹**（`experiment_manifest.json`）。
+
+**fail-closed（真实代码，`analysis_skeleton.py`）**：
+- 低功效保护断言：`n_groups < 5` 时**直接走 pooled OLS**，跳过 LMM/GEE（`low_power_cell` 门）。
+- LMM 随机效应协方差奇异 / `LinAlgError` → 回退 GEE → OLS（三级保守降级）。
+- **语义**：统计方法选择宁可保守降级，不产出可能不可靠的混合效应估计。详细见 `bench/README.md`。
+
 ## 数据与结果可用性
 
 本仓库处于预注册阶段（v0.4），**不含真实 API 实验数据**（与上方状态表一致）。现有结果文件的来源：
