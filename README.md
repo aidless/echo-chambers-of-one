@@ -1,4 +1,6 @@
 # Echo Chambers of One
+
+[![CI](https://github.com/aidless/echo-chambers-of-one/actions/workflows/ci.yml/badge.svg)](https://github.com/aidless/echo-chambers-of-one/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)  [![Data](https://img.shields.io/badge/data-CC--BY--4.0-lightgrey.svg)](LICENSE-DATA)
 
 > 项目代号：`echo-chambers-of-one`
