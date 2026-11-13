@@ -1,10 +1,12 @@
 # Echo Chambers of One
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)  [![Data](https://img.shields.io/badge/data-CC--BY--4.0-lightgrey.svg)](LICENSE)
+
+[![CI](https://github.com/aidless/echo-chambers-of-one/actions/workflows/ci.yml/badge.svg)](https://github.com/aidless/echo-chambers-of-one/actions/workflows/ci.yml)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)  [![Data](https://img.shields.io/badge/data-CC--BY--4.0-lightgrey.svg)](LICENSE-DATA)
 
 > 项目代号：`echo-chambers-of-one`
 > 当前版本：`v0.4-pre-reg`（第三轮文献调研修订，2026-07-29）
 > GitHub 仓库：https://github.com/aidless/echo-chambers-of-one
-> OSF 项目：https://osf.io/echo-chambers-of-one/（待创建）
+> OSF 项目：**未创建，无 DOI / 无 OSF project ID**（详见下方 Limits；仓库内 `osf/` 只是待粘贴文本，`osf/PREREGISTRATION_PASTE.md` 的 Project ID 为占位符）
 > 主文档：[`research_proposal.html`](research_proposal.html)
 > 预注册 v0.4：[`preregistration.md`](preregistration.md)
 > 深度调研：[`LITERATURE_REVIEW.md`](LITERATURE_REVIEW.md)
@@ -155,6 +157,38 @@ python analysis_skeleton.py --csv smoke_test/trajectories.csv \
 | `pilot/results/`（同名三件套）| `python pilot/collect_outputs.py` 后对收集的 CSV 跑 `analysis_skeleton.py` | `pilot/collected_trajectories.csv` 与 `pilot/outputs/` 轨迹**未提交**（链路验证为 Mock 模式，见 `pilot/PILOT_REPORT.md`）|
 
 正式实验数据采集待 DeepSeek key 就绪后启动；OSF 项目创建后在此处补 DOI 与数据归档链接。预注册文本 [`preregistration.md`](preregistration.md)（v0.4）为冻结快照，修订历史见文内修订说明。
+
+## Results（烟雾测试结果，合成数据）
+
+仓库自带一套已提交的烟雾测试结果（`smoke_test/results/`，REPORT.md 生成于 2026-07-22，
+输入为 `generate_synthetic_trajectories.py` 合成的 **2,268 行 × 324 条轨迹**，
+配置 6 模型 × 6 条件 × 3 任务 × 3 种子 × 7 检查点）：
+
+| 指标 | 值 | 来源 |
+|---|---|---|
+| 总观测数 / 独立轨迹 | 2,268 / 324 | `smoke_test/results/REPORT.md` |
+| accuracy 条件均值 | isolated **0.236**（最低）→ novelty 0.447 → feedback 0.637 → control_stateless 0.719 → peer 0.606 → human **0.782**（最高） | 同上 |
+| 交互项检验 | 25 行（5 outcome × 5 condition×logstep），全部 `significant_05=True`（合成数据按设计注入效应） | `smoke_test/results/interaction_tests.csv` 现算 |
+| 拟合方法 | LMM 随机截距共线性 → 按设计回退 OLS（`ols_fallback`） | REPORT.md §2 |
+| 本机复算（2026-11-10） | 重新生成合成数据并重跑骨架：`n_obs=2268, n_groups=324, converged=true`；条件均值逐 run 略有差异（合成生成器未锁全局 seed） | 本机实跑 `analysis_skeleton.py --out /tmp/eco_results` |
+
+**这些数字只证明统计骨架链路可用（数据→拟合→交互检验→回退），不构成任何
+关于真实智能体行为的证据。**
+
+## What this doesn't claim / Limits
+
+- **预注册未登记**：截至本 README 修订（2026-11-10），本项目**没有 OSF DOI、没有
+  OSF project ID、没有任何外部注册平台的登记记录**。仓库内 `osf/` 目录只是准备
+  粘贴到 OSF 的 Wiki/预登记文本；`osf/PREREGISTRATION_PASTE.md` 的
+  "OSF Project ID: (填写项目 ID)" 仍是占位符，`next_steps.md` 将「创建 OSF 项目 /
+  正式登记冻结预注册」列为待办。在登记完成前，`preregistration.md` 只是仓库内
+  自我声明的冻结快照，**不构成第三方可验证的预注册**。
+- **无真实 API 数据**：当前所有数字来自合成烟雾测试（上表）或 Mock 模式 pilot
+  （`pilot/outputs/` 未提交）；正式 1944 轨迹网格尚未启动。
+- **烟雾测试的显著性是设计内注入**：合成轨迹按构造携带条件效应，25 个交互项
+  全显著不代表统计骨架能区分真实数据中的效应。
+- **预算与时间表是计划值**：$1500–$2500 预算与执行时间表（`next_steps.md`）
+  为估算，未经过任何实际消耗验证。
 
 ## 关键设计决策（v0.2）
 
