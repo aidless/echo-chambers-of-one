@@ -18,7 +18,6 @@ OSF 上传脚本
 from __future__ import annotations
 
 import argparse
-import json
 import subprocess
 from pathlib import Path
 
