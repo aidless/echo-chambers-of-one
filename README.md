@@ -254,3 +254,45 @@ python scripts/osf_upload.py --project <your-osf-id>
 
 - 代码：MIT
 - 文档、数据、预注册：CC-BY-4.0
+
+## 验收标准与复算
+
+本仓判为合格的条件是 `python3 eval/run_cases.py` 通过率必须为 100%（20/20），且 `make eval` 退出码必须为 0；任何一条失败即判为不合格。
+
+### 题库覆盖（`eval/cases.jsonl`，20 条）
+
+| axis | 条数 | 真调用的对象 |
+|---|---|---|
+| `env-state` | 3 | `pilot/vending_env.py` 的 `VendingState` 默认值、`snapshot()` 键集、`from_snapshot` 往返 |
+| `env-action` | 3 | `VendingEnv._parse_action` 的带参 / 无 `<action>` / 跨行无参三种解析 |
+| `env-dynamics` | 3 | `VendingEnv.step` 的 wait 现金流、restock 成本与库存、`set_price` 的键名行为 |
+| `env-guard` | 3 | 余额不足不进货、`history`/`step` 计数、`load_state` 缺文件异常类型 |
+| `signals` | 2 | `pilot/runner.py` 的 `condition_signals` 配额与未知条件异常 |
+| `llm-mock` | 2 | `pilot/llm_client.py` 的 `MockClient` 同 prompt 确定性与 action 标签数 |
+| `evaluator` | 2 | `pilot/evaluator.py` 的 `EvalBattery.ITEMS` 条数与桩客户端下的五项得分 |
+| `stats` | 2 | `analysis_skeleton.py` 的 `holm_bonferroni`、`cohen_d_with_ci` |
+
+每条 `expr`/`raises` 题的期望值都是现跑本仓 API 得到的，不是抄文档；`question` 写明被钉的行为，`source` 指向真实文件。
+
+### 三条命令
+
+```bash
+python3 eval/run_cases.py              # 全跑，必须 20/20
+python3 eval/run_cases.py --selftest   # 反证：篡改第一条期望值，必须 19/20 变红且 exit 0
+make eval                              # 本地/CI 入口，退出码必须为 0
+```
+
+### 复算
+
+`python3 eval/run_cases.py --save` 把逐条结果与失败归因写入 `eval/run-report.json`（`total`/`passed`/`failed`/`failed_by_axis`/`results`）。复算口径：删掉该文件后重跑一次 `--save`，`passed` 必须等于 `total`（20），`failed_by_axis` 必须为空对象；若数字对不上，说明题库或实现已经漂移，按失败归因定位到 section 再重算。
+
+### 失败归因
+
+失败不是只报一个通过率，而是按 axis 汇总到 `run-report.json` 的 `failed_by_axis`，并在终端打印同样一段。示例（`--selftest` 篡改第一条后的真实输出）：
+
+```
+失败归因（按 axis）：
+  env-state: 1 条 —— env-state-defaults
+```
+
+按 axis 读法：`env-state` / `env-action` 失败 → 环境状态与动作解析被改；`env-dynamics` 失败 → 现金流或库存结算口径变了；`env-guard` 失败 → 边界条件（余额、计数、缺文件）失守；`signals` 失败 → 条件配额表变了；`llm-mock` 失败 → 无密钥回退路径不再是确定性的；`evaluator` 失败 → 评测电池条目或计分改了；`stats` 失败 → 统计函数（Holm 校正、Cohen's d）口径变了。

@@ -1,0 +1,129 @@
+{
+ "total": 20,
+ "passed": 20,
+ "failed": 0,
+ "selftest": false,
+ "failed_by_axis": {},
+ "results": [
+  {
+   "id": "env-state-defaults",
+   "axis": "env-state",
+   "ok": true,
+   "detail": "[500.0, 10, 5, 2.5, 0]"
+  },
+  {
+   "id": "env-state-snapshot-keys",
+   "axis": "env-state",
+   "ok": true,
+   "detail": "['balance', 'inventory', 'prices', 'step']"
+  },
+  {
+   "id": "env-state-roundtrip",
+   "axis": "env-state",
+   "ok": true,
+   "detail": "True"
+  },
+  {
+   "id": "env-action-parse-restock",
+   "axis": "env-action",
+   "ok": true,
+   "detail": "[('amount', '7'), ('item', 'item_3'), ('name', 'restock')]"
+  },
+  {
+   "id": "env-action-parse-noaction",
+   "axis": "env-action",
+   "ok": true,
+   "detail": "[('amount', 0), ('name', 'wait')]"
+  },
+  {
+   "id": "env-action-parse-multiline",
+   "axis": "env-action",
+   "ok": true,
+   "detail": "wait"
+  },
+  {
+   "id": "env-dynamics-wait-reward",
+   "axis": "env-dynamics",
+   "ok": true,
+   "detail": "[20.0, 520.0, 1]"
+  },
+  {
+   "id": "env-dynamics-restock",
+   "axis": "env-dynamics",
+   "ok": true,
+   "detail": "[16.0, 516.0, 8]"
+  },
+  {
+   "id": "env-dynamics-set-price-kwarg",
+   "axis": "env-dynamics",
+   "ok": true,
+   "detail": "[20.0, 2.5]"
+  },
+  {
+   "id": "env-guard-poor-balance",
+   "axis": "env-guard",
+   "ok": true,
+   "detail": "[20.5, 4]"
+  },
+  {
+   "id": "env-guard-history-length",
+   "axis": "env-guard",
+   "ok": true,
+   "detail": "[2, 2]"
+  },
+  {
+   "id": "env-guard-load-missing",
+   "axis": "env-guard",
+   "ok": true,
+   "detail": "raised FileNotFoundError"
+  },
+  {
+   "id": "signals-peer-quota",
+   "axis": "signals",
+   "ok": true,
+   "detail": "3800"
+  },
+  {
+   "id": "signals-unknown-key",
+   "axis": "signals",
+   "ok": true,
+   "detail": "raised KeyError"
+  },
+  {
+   "id": "llm-mock-deterministic",
+   "axis": "llm-mock",
+   "ok": true,
+   "detail": "True"
+  },
+  {
+   "id": "llm-mock-action-count",
+   "axis": "llm-mock",
+   "ok": true,
+   "detail": "1"
+  },
+  {
+   "id": "evaluator-item-count",
+   "axis": "evaluator",
+   "ok": true,
+   "detail": "6"
+  },
+  {
+   "id": "evaluator-run-stub",
+   "axis": "evaluator",
+   "ok": true,
+   "detail": "[1.0, 1.0, 1.0, 1.0, 0.5]"
+  },
+  {
+   "id": "stats-holm",
+   "axis": "stats",
+   "ok": true,
+   "detail": "[0.03, 0.06, 0.06]"
+  },
+  {
+   "id": "stats-cohen-d-constant",
+   "axis": "stats",
+   "ok": true,
+   "detail": "[0.0, 0.0, 0.0]"
+  }
+ ]
+}
