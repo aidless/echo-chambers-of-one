@@ -138,7 +138,8 @@ python scripts/osf_upload.py --project <your-osf-id> --dry-run    # 预检查
 python scripts/osf_upload.py --project <your-osf-id>             # 实际上传
 ```
 
-预期输出：
+下面是虚构的命令输出，用来说明脚本打印长什么样。它不是一次真实上传。`x7y8z` 不是项目 ID。OSF 项目尚未创建。
+
 ```
 [done] 21 files uploaded to OSF project x7y8z
 ```

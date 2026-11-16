@@ -1,15 +1,16 @@
 # OSF 预登记粘贴内容
 
-> 把下面的内容完整复制到 OSF 项目 Registrations → New Registration → Standard Pre-Data Collection Registration 的 Rich Text / Markdown 编辑器。
+> **NOT CREATED.** 没有 OSF 项目，没有登记，没有 DOI。下面不是已经提交的预注册。
+> Project ID 仍是占位符。正文还是早期 7 模型草稿，和 `preregistration.md` v0.4 不一致。若将来有人登记，应粘贴 `preregistration.md`，不要粘贴这一页。
 
 ---
 
 # Echo Chambers of One — Pre-registration
 
 **Project:** Echo Chambers of One
-**OSF Project ID:** (填写项目 ID)
-**Registration date:** 2026-07-22
-**Status:** Pre-Data Collection Registration
+**OSF Project ID:** (填写项目 ID) — 占位符，不是编号
+**Registration date:** 无。2026-07-22 不是登记日。
+**Status:** 未登记。下面的 "Pre-Data Collection" 字样是模板腔，不是已完成的状态。
 
 ---
 

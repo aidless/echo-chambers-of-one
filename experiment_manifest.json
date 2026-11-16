@@ -1,5 +1,6 @@
 {
-  "$schema": "https://osf.io/echo-chambers-of-one/manifest-v0.4",
+  "schema_status": "No external JSON Schema. checks/validate_manifest.py compares this file with the protocol-facts block in preregistration.md. A previous $schema value was an osf.io URL for a project that does not exist.",
+  "osf_project_created": false,
   "version": "0.4",
   "preregistration_date": "2026-07-29",
   "preregistration_version": "v0.4 (3rd literature review: models + ethics + OSF)",
@@ -46,22 +47,37 @@
       "id": "vending",
       "name": "Vending-Bench style long-horizon economic task",
       "primary_mechanism": "decision_drift",
-      "source": "Andon Labs 2025 (arXiv:2502.15840)",
-      "scoring_dimensions": ["balance_survival", "pricing_accuracy", "restock_rationality", "anti_meltdown_loops"]
+      "source": "Backlund & Petersson (arXiv:2502.15840)",
+      "scoring_dimensions": [
+        "balance_survival",
+        "pricing_accuracy",
+        "restock_rationality",
+        "anti_meltdown_loops"
+      ]
     },
     {
       "id": "longmemeval",
       "name": "LongMemEval style long-term memory task",
       "primary_mechanism": "memory_loss",
-      "source": "Wu et al. 2025 ICLR (arXiv:2410.10813)",
-      "scoring_dimensions": ["fact_recall", "temporal_consistency", "contradiction_rate", "knowledge_update"]
+      "source": "Wu et al., ICLR 2025 (arXiv:2410.10813)",
+      "scoring_dimensions": [
+        "fact_recall",
+        "temporal_consistency",
+        "contradiction_rate",
+        "knowledge_update"
+      ]
     },
     {
       "id": "helmet",
       "name": "HELMET style long-context reasoning",
       "primary_mechanism": "context_rot",
-      "source": "Princeton 2024 ICLR (arXiv:2410.02694)",
-      "scoring_dimensions": ["needle_accuracy", "full_context_reasoning", "multi_hop", "rag_classification"]
+      "source": "Yen et al., ICLR 2025 (arXiv:2410.02694)",
+      "scoring_dimensions": [
+        "needle_accuracy",
+        "full_context_reasoning",
+        "multi_hop",
+        "rag_classification"
+      ]
     }
   ],
   "conditions": [
@@ -122,7 +138,12 @@
   ],
   "context_length_manipulation": {
     "id": "length",
-    "values": ["4k", "32k", "128k", "max"],
+    "values": [
+      "4k",
+      "32k",
+      "128k",
+      "max"
+    ],
     "max_per_model": {
       "claude-sonnet-4.6": "1M",
       "claude-opus-4.7": "1M",
@@ -132,45 +153,132 @@
     },
     "note": "orthogonal dimension added in v0.2 to control context rot; v0.4 max values updated to current model API limits"
   },
-  "checkpoints": [0, 100, 500, 1000, 2000, 5000, 10000],
-  "seeds": [11, 22, 33],
+  "checkpoints": [
+    0,
+    100,
+    500,
+    1000,
+    2000,
+    5000,
+    10000
+  ],
+  "seeds": [
+    11,
+    22,
+    33
+  ],
   "state_view_counterfactuals": {
     "interval_steps": 1000,
     "views": [
-      {"id": "raw", "description": "complete raw state"},
-      {"id": "structured", "description": "same length but JSON-tabular"},
-      {"id": "fake_memory", "description": "same length but with 3 injected false memories"},
-      {"id": "lorem", "description": "same length task-irrelevant lorem ipsum"}
+      {
+        "id": "raw",
+        "description": "complete raw state"
+      },
+      {
+        "id": "structured",
+        "description": "same length but JSON-tabular"
+      },
+      {
+        "id": "fake_memory",
+        "description": "same length but with 3 injected false memories"
+      },
+      {
+        "id": "lorem",
+        "description": "same length task-irrelevant lorem ipsum"
+      }
     ],
     "decision_rule": "isolation effect is 'real loneliness' only if (a) and (b) show feedback > isolated AND (c) eliminates the gap"
   },
   "failure_attribution_schema": {
-    "source": "HORIZON (arXiv:2604.11978)",
+    "source": "Protocol-defined categories. HORIZON (arXiv:2604.11978) has an LLM-as-a-Judge attribution pipeline; the retrieved abstract does not list these three categories [UNVERIFIED].",
     "categories": [
-      {"id": "planning", "definition": "current action choice inconsistent with goal"},
-      {"id": "memory_loss", "definition": "contradicts past action or fact"},
-      {"id": "historical_error_accumulation", "definition": "self-reinforcing loop of early errors"}
+      {
+        "id": "planning",
+        "definition": "current action choice inconsistent with goal"
+      },
+      {
+        "id": "memory_loss",
+        "definition": "contradicts past action or fact"
+      },
+      {
+        "id": "historical_error_accumulation",
+        "definition": "self-reinforcing loop of early errors"
+      }
     ],
     "judge_model": "separate LLM-as-a-Judge; not same model as agent"
   },
   "anti_degradation_mechanisms": [
-    {"id": "self_talk", "source": "Wei et al. 2022 CoT", "expected_effect": "may_backfire", "warning_source": "NoLiMa (arXiv:2502.05167)"},
-    {"id": "episodic_recall", "source": "A-MEM (arXiv:2502.12110)", "expected_effect": "medium"},
-    {"id": "source_tagging", "source": "HippoRAG 2 (arXiv:2502.14802)", "expected_effect": "medium"},
-    {"id": "periodic_reset", "source": "weak", "expected_effect": "may_be_false_positive"},
-    {"id": "external_grounding", "source": "CRAG (arXiv:2401.15884)", "expected_effect": "large"},
-    {"id": "independent_critic", "source": "LATS (arXiv:2310.04406)", "expected_effect": "large_if_truly_independent"},
-    {"id": "semantic_compression", "source": "Mem0 (arXiv:2504.19413)", "expected_effect": "medium"},
-    {"id": "grounding_document", "source": "LoCoMo (arXiv:2402.17753)", "expected_effect": "medium"}
+    {
+      "id": "self_talk",
+      "source": "Wei et al. 2022 CoT",
+      "expected_effect": "may_backfire",
+      "warning_source": "NoLiMa (arXiv:2502.05167)"
+    },
+    {
+      "id": "episodic_recall",
+      "source": "A-MEM (arXiv:2502.12110)",
+      "expected_effect": "medium"
+    },
+    {
+      "id": "source_tagging",
+      "source": "HippoRAG 2 (arXiv:2502.14802)",
+      "expected_effect": "medium"
+    },
+    {
+      "id": "periodic_reset",
+      "source": "weak",
+      "expected_effect": "may_be_false_positive"
+    },
+    {
+      "id": "external_grounding",
+      "source": "CRAG (arXiv:2401.15884)",
+      "expected_effect": "large"
+    },
+    {
+      "id": "independent_critic",
+      "source": "LATS (arXiv:2310.04406)",
+      "expected_effect": "large_if_truly_independent"
+    },
+    {
+      "id": "semantic_compression",
+      "source": "Mem0 (arXiv:2504.19413)",
+      "expected_effect": "medium"
+    },
+    {
+      "id": "grounding_document",
+      "source": "LoCoMo (arXiv:2402.17753)",
+      "expected_effect": "medium"
+    }
   ],
   "adversarial_controls": [
-    {"id": "oracle_feedback", "description": "perfect external signal; upper bound"},
-    {"id": "adversarial_feedback", "description": "deliberately wrong feedback; lower bound"}
+    {
+      "id": "oracle_feedback",
+      "description": "perfect external signal; upper bound"
+    },
+    {
+      "id": "adversarial_feedback",
+      "description": "deliberately wrong feedback; lower bound"
+    }
   ],
   "outcomes": {
-    "primary": ["accuracy", "planning_score", "decision_score", "calibration", "memory_score"],
-    "secondary": ["survival_step", "first_unrecoverable_error_step", "task_success_rate", "tool_call_failure_rate"],
-    "attribution": ["planning_failure_rate", "memory_loss_rate", "historical_error_accumulation_rate"]
+    "primary": [
+      "accuracy",
+      "planning_score",
+      "decision_score",
+      "calibration",
+      "memory_score"
+    ],
+    "secondary": [
+      "survival_step",
+      "first_unrecoverable_error_step",
+      "task_success_rate",
+      "tool_call_failure_rate"
+    ],
+    "attribution": [
+      "planning_failure_rate",
+      "memory_loss_rate",
+      "historical_error_accumulation_rate"
+    ]
   },
   "design_summary": {
     "models": 5,
@@ -179,9 +287,9 @@
     "tasks": 3,
     "seeds": 3,
     "total_cells": 1080,
-    "total_trajectories": 3240,
+    "total_trajectories": 1080,
     "v0_3_summary": "3 models x 4 lengths x 6 conditions x 3 tasks x 3 seeds = 648 cells (revised for cost control)",
-    "v0_4_summary": "5 models (added Claude Opus 4.7 + GPT-5 + Qwen3-235B-Thinking as open-source anchor + thinking controlled variable)"
+    "v0_4_summary": "5 models x 4 lengths x 6 conditions x 3 tasks x 3 seeds = 1080 cells = 1080 trajectories. The 2026-07-29 text said 3240 trajectories by counting the 3 seeds a second time. Corrected in-repo on 2026-11-16. OSF project not created, so this is not an OSF amendment."
   },
   "exclusion_rules": [
     "trajectories with API failure rate > 20% are removed and replaced",
@@ -190,29 +298,84 @@
     "no exclusion based on agent performance"
   ],
   "deviation_contingencies": [
-    {"trigger": "LMM random-effect covariance singular", "action": "LMM -> GEE (independence) -> pooled OLS; record method and fallback_reason in lmm_results.json"},
-    {"trigger": "n_groups < 5 per cell", "action": "skip LMM/GEE; go directly to pooled OLS; cell flagged as low-power"},
-    {"trigger": "API failure rate > 20%", "action": "cell excluded; report failure rate"},
-    {"trigger": "all Holm-corrected p > 0.05", "action": "report null; provide Benjamini-Hochberg FDR as sensitivity"},
-    {"trigger": "deepseek-v4-flash 1M context unavailable", "action": "fall back to 128K length"},
-    {"trigger": "self-talk in absence of oracle feedback reverses direction", "action": "test semantic_compression + independent_critic as two-factor design"},
-    {"trigger": "3-task interaction model fails to converge", "action": "fall back to per-task LMM, report each separately"}
+    {
+      "trigger": "LMM random-effect covariance singular",
+      "action": "LMM -> GEE (independence) -> pooled OLS; record method and fallback_reason in lmm_results.json"
+    },
+    {
+      "trigger": "n_groups < 5 per cell",
+      "action": "skip LMM/GEE; go directly to pooled OLS; cell flagged as low-power"
+    },
+    {
+      "trigger": "API failure rate > 20%",
+      "action": "cell excluded; report failure rate"
+    },
+    {
+      "trigger": "all Holm-corrected p > 0.05",
+      "action": "report null; provide Benjamini-Hochberg FDR as sensitivity"
+    },
+    {
+      "trigger": "deepseek-v4-flash 1M context unavailable",
+      "action": "fall back to 128K length"
+    },
+    {
+      "trigger": "self-talk in absence of oracle feedback reverses direction",
+      "action": "test semantic_compression + independent_critic as two-factor design"
+    },
+    {
+      "trigger": "3-task interaction model fails to converge",
+      "action": "fall back to per-task LMM, report each separately"
+    }
   ],
   "budget_estimate": {
-    "total_trajectories": 3240,
+    "basis_trajectories": 1080,
     "tokens_per_trajectory": 2000000,
-    "total_tokens_billion": 6.48,
+    "total_tokens": 2160000000,
+    "total_tokens_billion": 2.16,
     "cost_breakdown": {
-      "deepseek_v4_flash_cache_hit": {"fraction": 0.5, "rate_per_million": 0.0028, "usd": 9.1},
-      "deepseek_v4_flash_cache_miss": {"fraction": 0.1, "rate_per_million": 0.14, "usd": 90.7},
-      "qwen3_235b_thinking": {"fraction": 0.1, "rate_per_million": 0.6, "usd": 388.8},
-      "claude_sonnet_4_6": {"fraction": 0.1, "rate_per_million": 3.0, "usd": 1944},
-      "claude_opus_4_7": {"fraction": 0.05, "rate_per_million": 15.0, "usd": 4860},
-      "gpt_5": {"fraction": 0.15, "rate_per_million": 2.5, "usd": 2430}
+      "deepseek_v4_flash_cache_hit": {
+        "fraction": 0.5,
+        "rate_per_million": 0.0028,
+        "usd": 3.024
+      },
+      "deepseek_v4_flash_cache_miss": {
+        "fraction": 0.1,
+        "rate_per_million": 0.14,
+        "usd": 30.24
+      },
+      "qwen3_235b_thinking": {
+        "fraction": 0.1,
+        "rate_per_million": 0.6,
+        "usd": 129.6
+      },
+      "claude_sonnet_4_6": {
+        "fraction": 0.1,
+        "rate_per_million": 3.0,
+        "usd": 648.0
+      },
+      "claude_opus_4_7": {
+        "fraction": 0.05,
+        "rate_per_million": 15.0,
+        "usd": 1620.0
+      },
+      "gpt_5": {
+        "fraction": 0.15,
+        "rate_per_million": 2.5,
+        "usd": 810.0
+      }
     },
-    "total_usd_low": 2500,
-    "total_usd_high": 4500,
-    "note": "v0.4 budget with 5 models; Claude Opus 4.7 is the biggest cost driver; can drop Opus to lower to $2000-$3000"
+    "line_item_sum_usd": 3240.864,
+    "measured_spend_usd": null,
+    "superseded_figures": {
+      "trajectories_double_counted": 3240,
+      "stated_band_usd": [
+        2500,
+        4500
+      ],
+      "line_item_sum_usd_at_3240_tokens": 9722.6,
+      "why": "The 2026-07-29 manifest multiplied the 3 seeds a second time (1080*3=3240) and stated a $2500-$4500 band. The line items at that token volume summed to about $9723, not to that band. Section 11 of the same draft still said 1944 trajectories. None of these figures is a measured cost."
+    },
+    "note": "line_item_sum_usd rescales the old rate card to 1080 trajectories. It is not a vendor quote and not money spent. Rates were not re-checked against a vendor page on 2026-11-16."
   },
   "timeline": {
     "stage_1_internal_review": "2026-07-22 to 2026-08-15",
@@ -235,7 +398,7 @@
   "v0_3_to_v0_4_changes": [
     "3 models -> 5 models (added Claude Opus 4.7 as ceiling + GPT-5 as OpenAI high-end + Qwen3-235B-Thinking as open-source reasoning anchor)",
     "DeepSeek V4 Flash reclassified as open-source (was closed-source in v0.3 manifest, but V4-Flash is the open-source 1M-context workhorse)",
-    "models 5 x 4 lengths x 6 conditions x 3 tasks x 3 seeds = 1080 cells, 3240 trajectories (was 648 cells, 1944 trajectories)",
+    "models 5 x 4 lengths x 6 conditions x 3 tasks x 3 seeds = 1080 cells. The 2026-07-29 sentence said 3240 trajectories by counting seeds twice; corrected in-repo on 2026-11-16 to 1080. OSF project not created.",
     "added Section 15 Ethics & IRB: 5 mandatory fields (IRB approval, compensation, data protection, dual use, disclosure)",
     "added Section 16 PRISMA 2020 + CONSORT-AI mapping",
     "added Section 17 OSF project structure + 5 COS Open Science Badges application plan",

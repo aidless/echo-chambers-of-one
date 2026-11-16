@@ -118,9 +118,9 @@
 ### 方法论
 1. [multcomp 1.4-31 CRAN PDF](https://cran.r-project.org/web/packages/multcomp/multcomp.pdf)
 2. [Green & MacLeod 2016 *simr* (MEE)](https://cran.r-project.org/web/packages/simr/simr.pdf)
-3. [Barr et al. 2013 (JML) + Matuschek 2017 (JML)](https://doi.org/10.1016/j.jml.2012.11.001)
+3. [Barr et al. 2013 (JML)](https://doi.org/10.1016/j.jml.2012.11.001)。同一条旧稿还写了 Matuschek 2017，这个 DOI 不是那篇，仓库里也没有它的 DOI [UNVERIFIED]。
 4. [Lakens 2022 *Improving Your Statistical Inferences*](https://lakens.github.io/statistical_inferences/)
-5. [Lakens 2024 NHB *Deviations from the registered analysis plan*](https://doi.org/10.1038/s41562-024-01909-1)
+5. [Lakens 2024 NHB *Deviations from the registered analysis plan*](https://doi.org/10.1038/s41562-024-01909-1) [UNVERIFIED]（Crossref 在 2026-11-16 返回 404，没有改成别的 DOI）
 6. [COS Registered Reports initiative](https://www.cos.io/our-services/registered-reports)
 7. [brms CRAN](https://cran.r-project.org/web/packages/brms/)
 8. [emmeans vignette](https://cran.r-project.org/web/packages/emmeans/vignettes/confidence-intervals.html)

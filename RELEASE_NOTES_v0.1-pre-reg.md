@@ -1,8 +1,10 @@
 # Echo Chambers of One · v0.1-pre-reg
 
-**Release date:** 2026-07-22
-**Status:** Pre-registration Stage 1 — frozen
-**DOI:** (to be assigned by OSF after registration)
+> Historical note for the git tag `v0.1-pre-reg` only. That tag is not an OSF registration. No DOI was issued. The cover letter mentioned below was not sent. The current protocol draft is v0.4 in `preregistration.md`, and the OSF project is still not created.
+
+**Release date of the tag:** 2026-07-22
+**Status:** old snapshot. Not frozen on OSF. Not the current protocol.
+**DOI:** none.
 
 ## What's in this release
 
@@ -23,7 +25,7 @@ This is the **frozen pre-registration snapshot** of the Echo Chambers of One stu
 - `experiment_manifest.json` — Complete experimental grid (models, tasks, conditions, checkpoints)
 - `analysis_skeleton.py` — Statistical pipeline with LMM → GEE → OLS fallback + Holm-Bonferroni correction
 - `paper_outline.md` — Stage 1 paper structure
-- `cover_letter.md` — AAMAS 2027 submission letter with anticipated reviewer concerns
+- `cover_letter.md` — draft letter. It was not sent. Later revisions label the questions as anticipated, not received.
 - `pilot/` — Pilot environment scaffolding (Vending env, eval battery, LLM clients, runner)
 - `smoke_test/` — Synthetic-trajectory smoke test that validates the entire pipeline
 - `scripts/osf_upload.py` — Automated OSF uploader
