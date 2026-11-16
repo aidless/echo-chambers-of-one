@@ -5,6 +5,26 @@
 > 修订来源：`LITERATURE_REVIEW_v3.md` 第三轮深挖（模型选型 + 伦理 + OSF 报告规范）
 > 配套：`LITERATURE_REVIEW.md`（v0.1→v0.2）+ `LITERATURE_REVIEW_v2.md`（v0.2→v0.3）+ `LITERATURE_REVIEW_v3.md`（v0.3→v0.4）
 > 相比 v0.3 增量：§3.1 模型从 3 个扩到 5 个（含开源锚 + thinking 受控变量）；新增 §15 伦理与 IRB；新增 §16 PRISMA 2020 章节映射；新增 §17 OSF 项目结构。
+> OSF 项目尚未创建。下面的 `protocol-facts` 是现行网格；它不是 OSF 登记，也没有 DOI。
+
+## 0. Machine-checked facts
+
+`checks/validate_manifest.py` 用这块对照 `experiment_manifest.json`。两边不一致时 `make check` 失败。
+
+```protocol-facts
+{
+  "version": "0.4",
+  "models": ["claude-sonnet-4.6", "claude-opus-4.7", "gpt-5", "deepseek-v4-flash", "qwen3-235b-thinking"],
+  "conditions": ["control_stateless", "isolated", "novelty", "feedback", "peer", "human"],
+  "tasks": ["vending", "longmemeval", "helmet"],
+  "lengths": ["4k", "32k", "128k", "max"],
+  "seeds": [11, 22, 33],
+  "checkpoints": [0, 100, 500, 1000, 2000, 5000, 10000],
+  "cells": 1080,
+  "trajectories": 1080,
+  "osf_project_created": false
+}
+```
 
 ---
 
@@ -15,7 +35,7 @@
 ## 2. 核心假设（3 confirmatory + 2 exploratory）
 
 ### Confirmatory
-- **H1.** 在所有 3 任务、3 模型、4 长度上，"isolated" 条件的纵向能力曲线显著低于含外部信号的 5 个条件。
+- **H1.** 在全部 3 个任务、5 个模型、4 个长度上，"isolated" 条件的纵向能力曲线显著低于含外部信号的另外 5 个条件。v0.4 把模型从 3 个改成 5 个时，这句曾仍写着「3 模型」；2026-11-16 按 §3.1 改正。这句话和 §7 的操作化（参照组 = feedback 时 isolated 的 β3 < 0）不是同一句，见 `FAILURE_MODES.md`。
 - **H2.** "feedback" 条件比 "novelty" 条件斜率更正（纠错信息比纯新颖性更稀缺）。
 - **H3.** 在 4 长度操纵下，"context rot × isolation" 交互显著：上下文越长，isolated 组与 feedback 组的斜率差异越大（最直接的"因式交互"证据）。
 
@@ -35,7 +55,7 @@
 | 任务 | **3**：Vending-Bench 风格 / LongMemEval 风格 / HELMET 风格长上下文推理 | 每任务覆盖一种假设机制 |
 | 重复 | **3 seeds** | Vending-Bench 报告 run-to-run 方差极大，3 seed 提供 IQR |
 
-**正式 cell 数** = 5 × 4 × 6 × 3 × 3 = **1080 cell**，总计 **3240 轨迹**。
+**正式 cell 数** = 5 × 4 × 6 × 3 × 3 = **1080**。每个 cell 一条轨迹，所以是 **1080 轨迹**。2026-07-29 文本写的「3240 轨迹」把已经算进连乘的 3 个 seed 又乘了一次。OSF 项目尚未创建，所以这次更正只在 git 里。
 
 ### 3.2 任务正交化（修订关键点）
 
@@ -75,7 +95,7 @@
 
 ## 6. 失败归因 schema（修订关键点）
 
-借鉴 HORIZON（arXiv:2604.11978），每条轨迹失败时由独立 LLM-as-a-Judge 归因为三类（不允许多选）：
+失败归因由独立 LLM-as-a-Judge 完成，每条轨迹只归一类（不允许多选）。下面三类是本协议自己的定义。HORIZON（arXiv:2604.11978）的摘要确认有一套 trajectory-grounded LLM-as-a-Judge 流程，但没有列出这三类 [UNVERIFIED]。
 
 | 类别 | 定义 |
 |---|---|
@@ -170,17 +190,13 @@ y_{i,t} = β0 + β1·log(1+t) + β2·C_c + β3·log(1+t)×C_c
 | **v0.3 新增**：主分析失败 fallback | 退回分任务 LMM；主次分析并行报告 |
 | **v0.3 新增**：peeking 触发 | 报告 peeking 时间点；切换 Bayesian sequential stopping plan（v0.4）|
 
-## 11. 算力预算（重算）
+## 11. 算力预算（算术更正，不是账单）
 
-- 总轨迹数：1944
-- 每轨迹 token：10000 步 × 200 token/步 = 2M
-- 总 token：1944 × 2M = 3.89B
-- 按 70% DeepSeek V4 Flash（缓存命中 $0.0028/1M）+ 30% 闭源（平均 $3/1M）：
-  - DeepSeek 部分：2720M token × $0.0028 = $7.6
-  - 闭源部分：1170M token × $3 = $3500
-  - **总预算：$3000–$5000**
-
-预算超出原估算 10 倍——可通过 ① 减闭源模型为 1 个（只留 claude-sonnet-4 作 baseline），② 缩 trajectory 到 5000 步 → 预算回到 $1500–$2500。
+- 轨迹数与 §3.1 相同：**1080**。
+- 每条轨迹的计划 token：2,000,000。这是 10000 步 × 200 token/步的假设，不是测量。
+- 计划总 token：2.16 × 10^9。
+- `experiment_manifest.json` 里的费率乘上这个 token 数，分项合计约 **$3240.864**。这不是报价，也不是已经发生的支出。`measured_spend_usd` 为空。
+- 2026-07-29 文本里的「1944 轨迹 / $3000–$5000」和 manifest 里的「3240 轨迹 / $2500–$4500」彼此也不相等，而且和当时的分项之和（约 $9723）对不上。那些数字都不再当作现行预算。
 
 ## 12. 时间线（保持 v0.1）
 
@@ -240,7 +256,7 @@ Stage 2 论文应包含 ≤ 1 页 "Dual Use & Mitigations" 子节：
 
 ## 16. PRISMA 2020 章节映射（v0.4 新增）
 
-按 [PRISMA 2020 (Page et al. BMJ 2021)](https://doi.org/10.1136/bmj.n71) 与 [CONSORT-AI / SPIRIT-AI](https://doi.org/10.1136/bmj.m3210)，本研究章节映射：
+按 [PRISMA 2020 (Page et al. BMJ 2021)](https://doi.org/10.1136/bmj.n71) 与 [SPIRIT-AI (Cruz Rivera et al. BMJ 2020)](https://doi.org/10.1136/bmj.m3210)。`10.1136/bmj.m3210` 的 Crossref 题名是 SPIRIT-AI Extension，不是 CONSORT-AI。CONSORT-AI 在本仓库没有已核对的 DOI [UNVERIFIED]。章节映射：
 
 | PRISMA Item | 对应本研究章节 | 实施阶段 |
 |---|---|---|
@@ -292,7 +308,7 @@ echo-chambers-of-one/
 | **Open Materials** | Stage 2 投稿前 | Stage 2 |
 | **Registered Report** | 期刊（AAMAS / JAAMAS / FAccT）接收 Stage 1 IPA 后 | 期刊决定 |
 
-申请方式：投稿时在 disclosure statement 勾选（[osf.io/5fndw](https://osf.io/5fndw/) 模板）。
+申请方式：若将来真的投稿，在 disclosure statement 里勾选 COS badge。仓库旧稿曾指向 `https://osf.io/5fndw/`。那不是本项目，本轮也没有打开该页 [UNVERIFIED]。
 
 ## 18. Internal Validity
 
@@ -311,14 +327,14 @@ echo-chambers-of-one/
 ## 19. Funding & Registration
 
 - **Funding**：待填写（建议声明无任何模型供应商资助以保持独立性）
-- **Registration**：[OSF Project DOI](https://osf.io/echo-chambers-of-one/)（待创建）
+- **Registration**：OSF 项目尚未创建。没有 project id，没有 DOI，没有 registration。不要把任何 osf.io 路径写成已经存在的项目页。
 - **GitHub**：https://github.com/aidless/echo-chambers-of-one
 
 ---
 
 ---
 
-**End of pre-registration. Frozen on Stage 1 acceptance.**
+**End of pre-registration draft. Not frozen: OSF project not created, and no Stage 1 acceptance exists.**
 
 **主要修订（v0.1 → v0.2）**：
 1. 7 模型 → 3 模型（专注闭源 + 1M 上下文主力）
@@ -338,7 +354,7 @@ echo-chambers-of-one/
 5. **§13 工程稳健性承诺（新增）**：6 条工程细节（cost-aware scheduler / cache routing / OpenTelemetry schema / 断点续跑 / Sonnet 4 thinking 审计 / gpt-4o 滚动窗口）
 
 **主要修订（v0.3 → v0.4）**：
-1. **§3.1 模型 3 → 5**：加 Claude Opus 4.7（天花板对照）+ GPT-5（OpenAI 高端）+ Qwen3-235B-Thinking（开源 reasoning 锚）；thinking 模式作为受控变量；cell 数 648 → 1080，轨迹 1944 → 3240
+1. **§3.1 模型 3 → 5**：加 Claude Opus 4.7（天花板对照）+ GPT-5（OpenAI 高端）+ Qwen3-235B-Thinking（开源 reasoning 锚）；thinking 模式作为受控变量；cell 数按 5×4×6×3×3 记为 1080。当时另写「轨迹 3240」，是把 3 个 seed 重复计入；2026-11-16 更正为 1080 轨迹（见 §3.1）。OSF 项目尚未创建，所以这不是 OSF 上的修订。
 2. **§15 伦理与 IRB（新增）**：5 段（IRB approval statement、Compensation、Data protection、Dual Use、Disclosure）
 3. **§16 PRISMA 2020 章节映射（新增）**：27 项 + CONSORT-AI 必含
 4. **§17 OSF 项目结构 + COS Badges（新增）**：标准文件夹树 + Open-Ended Registration + 5 枚 Badge 申请计划

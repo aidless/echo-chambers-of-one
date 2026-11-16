@@ -1,6 +1,7 @@
-# 下阶段执行清单（7 月 22 日 — 9 月）
+# 下阶段执行清单（2026-07 的计划草稿）
 
-> 与 `experiment_manifest.json` / `preregistration.md` / `paper_outline.md` 对齐。
+> 这不是进度报告。OSF 项目没有创建，没有投稿，没有收到评审。勾选只表示当时仓库里有一份草稿。
+> 现行网格是 `preregistration.md` 的 5 个模型 / 1080 轨迹。本页 Week 0 的「7 模型」已经过时。
 
 ## Week 0（本周，2026-07-22 ~ 28）
 

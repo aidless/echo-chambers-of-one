@@ -224,16 +224,17 @@ hr {
 <div class="container">
 
 <header class="cover">
-  <span class="eyebrow">正式研究方案 · Registered Report Stage 1</span>
+  <span class="eyebrow">DRAFT — not submitted · OSF project not created</span>
   <h1>Echo Chambers of One</h1>
   <p class="subtitle">外源交互剥夺下有状态语言智能体的纵向退化研究：将"Agent 孤独感"改写为可检验、可证伪的因果假设。</p>
   <dl class="meta">
     <div><dt>研究类型</dt><dd>受控纵向实验</dd></div>
     <div><dt>核心场景</dt><dd>长程 Agent 闭环运行</dd></div>
-    <div><dt>投稿方向</dt><dd>AAMAS / CogSci / ICLR</dd></div>
-    <div><dt>预计轨迹</dt><dd>≥ 6 模型 × 6 条件 × 20–30 重复</dd></div>
+    <div><dt>投稿</dt><dd>未投稿。AAMAS / CogSci / ICLR 只是曾考虑过的名字</dd></div>
+    <div><dt>网格</dt><dd>以 preregistration.md 为准：1080 cell = 1080 轨迹。下面正文里的旧计数不要单独引用</dd></div>
   </dl>
 </header>
+<p class="subtitle">本页是早期草稿，不是已投稿的 Stage 1，也不是 OSF 登记。现行网格、预算和引用状态以 <code>preregistration.md</code>、<code>experiment_manifest.json</code> 和 <code>CITATION_AUDIT.md</code> 为准。下面若出现 6 模型、每条件 20 条或 54 个 cell，都是旧稿，不要引用。</p>
 
 <nav class="toc">
   <strong style="display:block; margin-bottom:10px; font:600 15px var(--font-sans);">目录</strong>
@@ -306,7 +307,7 @@ hr {
   <div class="condition">
     <div class="role">社交对照</div>
     <h4>同伴交互</h4>
-    <p>与使用独立轨迹的同伴 Agent 交换信息，信息与反馈预算严格匹配。</p>
+    <p>计划与一条独立种子的同伴轨迹交换信息。manifest 里各条件的外部 token 配额现在并不相等，所以还不能称为预算已经匹配。</p>
   </div>
   <div class="condition">
     <div class="role">最强对照</div>
@@ -335,8 +336,8 @@ hr {
 </ul>
 <h3>4.2 模型选择</h3>
 <ul>
-  <li>至少 6 个不同家族与规模的语言模型，覆盖开源（如 LLaMA-3.1 系列、Qwen2.5 系列）与闭源 API。</li>
-  <li>每个模型对每条件至少 20 条独立轨迹，预实验若发现方差过大则扩展到 30 条。</li>
+  <li>现行名单是 preregistration.md 里的 5 个模型 id。本段旧稿写过「至少 6 个模型」，那已不是现行设计。</li>
+  <li>现行重复是 3 个 seed，算进 1080 个 cell。旧稿写的「每条件至少 20 条，不够再加到 30」不再使用。</li>
 </ul>
 </section>
 
@@ -372,12 +373,12 @@ hr {
 
 <h3>6.2 多重比较校正</h3>
 <ul>
-  <li>3 类信号 × 6 模型 × 3 任务：54 个 cell，Holm-Bonferroni 分层校正（按模型再按任务）。</li>
+  <li>旧稿这里写过 3×6×3=54 个 cell。现行网格是 1080。可运行脚本只对当前 CSV 里的交互项做 Holm；preregistration.md §7 还写了 Westfall–Young，代码里没有。</li>
   <li>效应量报告：连续指标用 Cohen's d + 95% CI；二元用 Cohen's h；二项用 McFadden R²。</li>
 </ul>
 
 <h3>6.3 样本量依据</h3>
-<p>先做 <code>2000</code> 步小规模预实验（每 cell <code>n=5</code>）估计组内方差，再用 Monte Carlo 模拟计算正式样本量。报告目标效应量 <code>d = 0.4</code>、α <code>= 0.05</code>、power <code>≥ 0.8</code>。</p>
+<p>旧稿设想先做短预实验再估计样本量，并写过目标效应量 d = 0.4、power ≥ 0.8。那次功效计算没有做。不要把这些数字当成已经验证的样本量。</p>
 </section>
 
 <section class="card">

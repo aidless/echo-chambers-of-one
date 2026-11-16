@@ -1,0 +1,1210 @@
+{
+  "kind": "synthetic-parameter-recovery",
+  "empirical_result": false,
+  "osf_registration": false,
+  "reference_level": "isolated",
+  "coding_note": "Reference level is isolated, so cond_feedback_x_logstep is the feedback slope minus the isolated slope. Preregistration §7 names the opposite coding (reference = feedback, β3 < 0 for isolated). The planted +0.04 gap is that same contrast with the sign flipped by the reference level. The skeleton does not fit the length term or the three-way interaction in §7.",
+  "dgp": {
+    "checkpoints": [
+      0,
+      100,
+      500,
+      1000,
+      2000,
+      5000,
+      10000
+    ],
+    "n_trajectories_per_condition": 30,
+    "random_intercept_sd": 0.05,
+    "residual_sd": 0.03,
+    "isolated_slope": -0.02,
+    "planted_feedback_minus_isolated": 0.04,
+    "novelty_minus_isolated": 0.0,
+    "planning_score_condition_gap": 0.0,
+    "outcome_is_unbounded": true
+  },
+  "versions": {
+    "python": "3.12",
+    "numpy": "2.2.6",
+    "pandas": "2.2.3",
+    "statsmodels": "0.14.5",
+    "sklearn": "1.6.1",
+    "scipy": "1.15.3"
+  },
+  "selective": [
+    [
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": 0.04076331,
+        "p_raw": 0.0,
+        "p_adjusted_holm": 0.0,
+        "significant_05": true,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": -0.0004067,
+        "p_raw": 0.6905929,
+        "p_adjusted_holm": 1.0,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "planning_score",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": 0.00023034,
+        "p_raw": 0.81081647,
+        "p_adjusted_holm": 1.0,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "planning_score",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": 0.00064234,
+        "p_raw": 0.5044426,
+        "p_adjusted_holm": 1.0,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      }
+    ],
+    [
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": 0.03970237,
+        "p_raw": 0.0,
+        "p_adjusted_holm": 0.0,
+        "significant_05": true,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": -0.00052203,
+        "p_raw": 0.60281758,
+        "p_adjusted_holm": 1.0,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "planning_score",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": 0.00015797,
+        "p_raw": 0.87518164,
+        "p_adjusted_holm": 1.0,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "planning_score",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": -0.00058285,
+        "p_raw": 0.56220947,
+        "p_adjusted_holm": 1.0,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      }
+    ],
+    [
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": 0.03900507,
+        "p_raw": 0.0,
+        "p_adjusted_holm": 0.0,
+        "significant_05": true,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": 0.00095718,
+        "p_raw": 0.36129328,
+        "p_adjusted_holm": 1.0,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "planning_score",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": 0.00038121,
+        "p_raw": 0.69633448,
+        "p_adjusted_holm": 1.0,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "planning_score",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": -0.0006558,
+        "p_raw": 0.50196925,
+        "p_adjusted_holm": 1.0,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      }
+    ],
+    [
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": 0.04067622,
+        "p_raw": 0.0,
+        "p_adjusted_holm": 0.0,
+        "significant_05": true,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": 0.00041945,
+        "p_raw": 0.66603932,
+        "p_adjusted_holm": 1.0,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "planning_score",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": 0.0005684,
+        "p_raw": 0.55886981,
+        "p_adjusted_holm": 1.0,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "planning_score",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": 0.00134388,
+        "p_raw": 0.1669735,
+        "p_adjusted_holm": 0.50092049,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      }
+    ],
+    [
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": 0.03869292,
+        "p_raw": 0.0,
+        "p_adjusted_holm": 0.0,
+        "significant_05": true,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": -0.00223046,
+        "p_raw": 0.03249424,
+        "p_adjusted_holm": 0.09748271,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "planning_score",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": -0.00012841,
+        "p_raw": 0.9014895,
+        "p_adjusted_holm": 1.0,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "planning_score",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": -0.00052483,
+        "p_raw": 0.61291382,
+        "p_adjusted_holm": 1.0,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      }
+    ],
+    [
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": 0.03931562,
+        "p_raw": 0.0,
+        "p_adjusted_holm": 0.0,
+        "significant_05": true,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": 0.00044081,
+        "p_raw": 0.65651085,
+        "p_adjusted_holm": 1.0,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "planning_score",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": 0.00145981,
+        "p_raw": 0.15901573,
+        "p_adjusted_holm": 0.4770472,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "planning_score",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": 8.039e-05,
+        "p_raw": 0.93817932,
+        "p_adjusted_holm": 1.0,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      }
+    ],
+    [
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": 0.0393057,
+        "p_raw": 0.0,
+        "p_adjusted_holm": 0.0,
+        "significant_05": true,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": 0.00041004,
+        "p_raw": 0.68646126,
+        "p_adjusted_holm": 1.0,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "planning_score",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": -0.00056059,
+        "p_raw": 0.59627003,
+        "p_adjusted_holm": 1.0,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "planning_score",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": -0.00101168,
+        "p_raw": 0.33904139,
+        "p_adjusted_holm": 1.0,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      }
+    ],
+    [
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": 0.03938762,
+        "p_raw": 0.0,
+        "p_adjusted_holm": 0.0,
+        "significant_05": true,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": 0.00157865,
+        "p_raw": 0.12126515,
+        "p_adjusted_holm": 0.36379546,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "planning_score",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": -0.0014813,
+        "p_raw": 0.13060424,
+        "p_adjusted_holm": 0.36379546,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "planning_score",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": -0.00071738,
+        "p_raw": 0.46409819,
+        "p_adjusted_holm": 0.46409819,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      }
+    ],
+    [
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": 0.03931596,
+        "p_raw": 0.0,
+        "p_adjusted_holm": 0.0,
+        "significant_05": true,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": -0.00164729,
+        "p_raw": 0.10611823,
+        "p_adjusted_holm": 0.21223647,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "planning_score",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": -0.00217229,
+        "p_raw": 0.03412791,
+        "p_adjusted_holm": 0.10238374,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "planning_score",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": 3.97e-05,
+        "p_raw": 0.96911902,
+        "p_adjusted_holm": 0.96911902,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      }
+    ],
+    [
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": 0.03994746,
+        "p_raw": 0.0,
+        "p_adjusted_holm": 0.0,
+        "significant_05": true,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": 8.907e-05,
+        "p_raw": 0.9279457,
+        "p_adjusted_holm": 1.0,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "planning_score",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": 0.00155283,
+        "p_raw": 0.12142813,
+        "p_adjusted_holm": 0.36428439,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "planning_score",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": 0.00040443,
+        "p_raw": 0.68666639,
+        "p_adjusted_holm": 1.0,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      }
+    ],
+    [
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": 0.03952632,
+        "p_raw": 0.0,
+        "p_adjusted_holm": 0.0,
+        "significant_05": true,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": -1.88e-06,
+        "p_raw": 0.99847519,
+        "p_adjusted_holm": 0.99847519,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "planning_score",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": -0.00156178,
+        "p_raw": 0.12227259,
+        "p_adjusted_holm": 0.36681778,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "planning_score",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": -0.00090104,
+        "p_raw": 0.37264123,
+        "p_adjusted_holm": 0.74528245,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      }
+    ],
+    [
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": 0.03932115,
+        "p_raw": 0.0,
+        "p_adjusted_holm": 0.0,
+        "significant_05": true,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": -0.00086917,
+        "p_raw": 0.41126461,
+        "p_adjusted_holm": 1.0,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "planning_score",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": 0.0009005,
+        "p_raw": 0.39468895,
+        "p_adjusted_holm": 1.0,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "planning_score",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": -0.00077458,
+        "p_raw": 0.46409295,
+        "p_adjusted_holm": 1.0,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      }
+    ],
+    [
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": 0.03921776,
+        "p_raw": 0.0,
+        "p_adjusted_holm": 0.0,
+        "significant_05": true,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": -9.211e-05,
+        "p_raw": 0.93084132,
+        "p_adjusted_holm": 1.0,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "planning_score",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": 0.00049447,
+        "p_raw": 0.62419733,
+        "p_adjusted_holm": 1.0,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "planning_score",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": -0.00027665,
+        "p_raw": 0.78400932,
+        "p_adjusted_holm": 1.0,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      }
+    ],
+    [
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": 0.04057784,
+        "p_raw": 0.0,
+        "p_adjusted_holm": 0.0,
+        "significant_05": true,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": 0.00021833,
+        "p_raw": 0.83255274,
+        "p_adjusted_holm": 1.0,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "planning_score",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": 0.00074129,
+        "p_raw": 0.47272962,
+        "p_adjusted_holm": 1.0,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "planning_score",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": 0.00042823,
+        "p_raw": 0.67828622,
+        "p_adjusted_holm": 1.0,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      }
+    ],
+    [
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": 0.04106976,
+        "p_raw": 0.0,
+        "p_adjusted_holm": 0.0,
+        "significant_05": true,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": 0.00038907,
+        "p_raw": 0.68860402,
+        "p_adjusted_holm": 1.0,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "planning_score",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": -0.00073326,
+        "p_raw": 0.4770031,
+        "p_adjusted_holm": 1.0,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "planning_score",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": 1.294e-05,
+        "p_raw": 0.98998342,
+        "p_adjusted_holm": 1.0,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      }
+    ],
+    [
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": 0.04041538,
+        "p_raw": 0.0,
+        "p_adjusted_holm": 0.0,
+        "significant_05": true,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": 0.0009257,
+        "p_raw": 0.35498561,
+        "p_adjusted_holm": 0.40616505,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "planning_score",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": -0.00145243,
+        "p_raw": 0.13538835,
+        "p_adjusted_holm": 0.40616505,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "planning_score",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": -0.00124108,
+        "p_raw": 0.20198754,
+        "p_adjusted_holm": 0.40616505,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      }
+    ],
+    [
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": 0.03977238,
+        "p_raw": 0.0,
+        "p_adjusted_holm": 0.0,
+        "significant_05": true,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": 0.00149377,
+        "p_raw": 0.17441679,
+        "p_adjusted_holm": 0.52325038,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "planning_score",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": -0.00085083,
+        "p_raw": 0.40505193,
+        "p_adjusted_holm": 0.69850864,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "planning_score",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": -0.00095649,
+        "p_raw": 0.34925432,
+        "p_adjusted_holm": 0.69850864,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      }
+    ],
+    [
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": 0.03961649,
+        "p_raw": 0.0,
+        "p_adjusted_holm": 0.0,
+        "significant_05": true,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": 8.292e-05,
+        "p_raw": 0.93607394,
+        "p_adjusted_holm": 1.0,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "planning_score",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": -0.00040572,
+        "p_raw": 0.70163412,
+        "p_adjusted_holm": 1.0,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "planning_score",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": -0.00015413,
+        "p_raw": 0.88428157,
+        "p_adjusted_holm": 1.0,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      }
+    ],
+    [
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": 0.04050175,
+        "p_raw": 0.0,
+        "p_adjusted_holm": 0.0,
+        "significant_05": true,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": 9.361e-05,
+        "p_raw": 0.92752082,
+        "p_adjusted_holm": 0.92752082,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "planning_score",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": 0.00133389,
+        "p_raw": 0.18893916,
+        "p_adjusted_holm": 0.37787832,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "planning_score",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": 0.00195648,
+        "p_raw": 0.05399123,
+        "p_adjusted_holm": 0.1619737,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      }
+    ],
+    [
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": 0.04051636,
+        "p_raw": 0.0,
+        "p_adjusted_holm": 0.0,
+        "significant_05": true,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": 0.0011008,
+        "p_raw": 0.29086104,
+        "p_adjusted_holm": 0.76517382,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "planning_score",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": 0.00078601,
+        "p_raw": 0.45198326,
+        "p_adjusted_holm": 0.76517382,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "planning_score",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": 0.00118945,
+        "p_raw": 0.25505794,
+        "p_adjusted_holm": 0.76517382,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      }
+    ]
+  ],
+  "all_null": [
+    [
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": -0.00075092,
+        "p_raw": 0.45039921,
+        "p_adjusted_holm": 0.90079842,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": -0.00061074,
+        "p_raw": 0.53930889,
+        "p_adjusted_holm": 0.90079842,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      }
+    ],
+    [
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": -0.00056422,
+        "p_raw": 0.58997754,
+        "p_adjusted_holm": 1.0,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": -0.00067505,
+        "p_raw": 0.51911049,
+        "p_adjusted_holm": 1.0,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      }
+    ],
+    [
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": -0.00214383,
+        "p_raw": 0.03138315,
+        "p_adjusted_holm": 0.06276631,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": -0.00024042,
+        "p_raw": 0.80927493,
+        "p_adjusted_holm": 0.80927493,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      }
+    ],
+    [
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": 0.00071311,
+        "p_raw": 0.49412764,
+        "p_adjusted_holm": 0.98825529,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": 4.338e-05,
+        "p_raw": 0.96682116,
+        "p_adjusted_holm": 0.98825529,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      }
+    ],
+    [
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": -0.00117366,
+        "p_raw": 0.22806745,
+        "p_adjusted_holm": 0.45613489,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": -0.00043888,
+        "p_raw": 0.65218042,
+        "p_adjusted_holm": 0.65218042,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      }
+    ],
+    [
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": 0.00126095,
+        "p_raw": 0.23121687,
+        "p_adjusted_holm": 0.46243375,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": 0.00060061,
+        "p_raw": 0.56850397,
+        "p_adjusted_holm": 0.56850397,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      }
+    ],
+    [
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": -0.00124594,
+        "p_raw": 0.20705358,
+        "p_adjusted_holm": 0.41410716,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": -3.574e-05,
+        "p_raw": 0.97112905,
+        "p_adjusted_holm": 0.97112905,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      }
+    ],
+    [
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": 0.00042663,
+        "p_raw": 0.66393749,
+        "p_adjusted_holm": 1.0,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": -0.00029257,
+        "p_raw": 0.76573228,
+        "p_adjusted_holm": 1.0,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      }
+    ],
+    [
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": 0.00113603,
+        "p_raw": 0.26510758,
+        "p_adjusted_holm": 0.4310465,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": 0.00126256,
+        "p_raw": 0.21552325,
+        "p_adjusted_holm": 0.4310465,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      }
+    ],
+    [
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": -0.00028087,
+        "p_raw": 0.78450668,
+        "p_adjusted_holm": 0.78450668,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": 0.00245785,
+        "p_raw": 0.01671434,
+        "p_adjusted_holm": 0.03342867,
+        "significant_05": true,
+        "method": "mixedlm_reml"
+      }
+    ],
+    [
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": -0.0005498,
+        "p_raw": 0.54532471,
+        "p_adjusted_holm": 0.86850868,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": -0.00071084,
+        "p_raw": 0.43425434,
+        "p_adjusted_holm": 0.86850868,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      }
+    ],
+    [
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": 0.00105587,
+        "p_raw": 0.30183669,
+        "p_adjusted_holm": 0.60367338,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": -0.0008144,
+        "p_raw": 0.42581515,
+        "p_adjusted_holm": 0.60367338,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      }
+    ],
+    [
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": -0.0017259,
+        "p_raw": 0.09458549,
+        "p_adjusted_holm": 0.18917097,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": -0.00056222,
+        "p_raw": 0.58605349,
+        "p_adjusted_holm": 0.58605349,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      }
+    ],
+    [
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": -0.00162191,
+        "p_raw": 0.11114712,
+        "p_adjusted_holm": 0.11114712,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": -0.00204043,
+        "p_raw": 0.04505597,
+        "p_adjusted_holm": 0.09011195,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      }
+    ],
+    [
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": 0.00091452,
+        "p_raw": 0.37153239,
+        "p_adjusted_holm": 0.37153239,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": 0.00173914,
+        "p_raw": 0.08925096,
+        "p_adjusted_holm": 0.17850192,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      }
+    ],
+    [
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": -0.00132688,
+        "p_raw": 0.19882396,
+        "p_adjusted_holm": 0.39764792,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": -0.00043693,
+        "p_raw": 0.67221899,
+        "p_adjusted_holm": 0.67221899,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      }
+    ],
+    [
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": 0.00154185,
+        "p_raw": 0.11065436,
+        "p_adjusted_holm": 0.22130873,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": -0.00066748,
+        "p_raw": 0.4898131,
+        "p_adjusted_holm": 0.4898131,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      }
+    ],
+    [
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": -0.00049271,
+        "p_raw": 0.63415083,
+        "p_adjusted_holm": 0.63415083,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": 0.00152674,
+        "p_raw": 0.14031451,
+        "p_adjusted_holm": 0.28062901,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      }
+    ],
+    [
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": -0.00107692,
+        "p_raw": 0.28956421,
+        "p_adjusted_holm": 0.28956421,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": -0.00194459,
+        "p_raw": 0.05582769,
+        "p_adjusted_holm": 0.11165539,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      }
+    ],
+    [
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_feedback_x_logstep",
+        "coef": -0.00024288,
+        "p_raw": 0.79993461,
+        "p_adjusted_holm": 1.0,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      },
+      {
+        "outcome": "accuracy",
+        "interaction": "cond_novelty_x_logstep",
+        "coef": -0.00020154,
+        "p_raw": 0.83344052,
+        "p_adjusted_holm": 1.0,
+        "significant_05": false,
+        "method": "mixedlm_reml"
+      }
+    ]
+  ],
+  "summary": {
+    "selective_seeds": 20,
+    "planted_value": 0.04,
+    "planted_abs_tolerance": 0.005,
+    "max_abs_planted_error": 0.00130708,
+    "all_null_seeds": 20,
+    "all_null_seeds_with_a_flag": [
+      2009
+    ],
+    "all_null_flag_cap": 3,
+    "note": "A flag in the all-null design is a Type I event for a 0.05 test, not recovery of the planted 0.04 effect. This file is not a power calculation for the 1080-cell study."
+  }
+}

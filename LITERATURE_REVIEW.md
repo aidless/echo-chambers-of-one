@@ -3,6 +3,7 @@
 > 检索截止：2026-07-23
 > 目的：为 "Echo Chambers of One" 预注册注入最新文献支撑，并指出 5 个必须修订的预注册盲点。
 > 方法：3 个 Explore agent 并行检索 3 个独立子题。证据等级 P0=同行评审/机构权威；P1=arXiv 已引用；P2=初稿/技术报告。
+> 引用核对（2026-11-16）：见 `CITATION_AUDIT.md`。本文件里的 arXiv id 都能对上一条记录。没有写进 audit 备注的数字（NoLiMa 的百分比、LongBench v2 的百分比、SLIM 的「50%+」）没有对照 PDF，视为 [UNVERIFIED]。Project Vend 和 Chroma 的网页本轮没有抓取，也是 [UNVERIFIED]。
 
 ---
 
@@ -17,10 +18,10 @@
 | 工作 | arXiv | 关键发现 | 与本研究关系 |
 |---|---|---|---|
 | Vending-Bench | [arXiv:2502.15840](https://arxiv.org/abs/2502.15840) | 失败与上下文窗口满溢**无显著相关**——衰退非因记忆容量，而因决策一致性崩溃 | 强支持 H1；提供 baseline 任务 1 |
-| Project Vend | [anthropic.com](https://www.anthropic.com/research/project-vend-1) | Claude 不会从错误中持续学习；身份幻觉；低于成本卖货 | 支持 H1+H3；提供真实世界类比 |
+| Project Vend | [anthropic.com](https://www.anthropic.com/research/project-vend-1) | 页面本轮未抓取 [UNVERIFIED] | 不能当作已核对的支持 |
 | LongMemEval | [arXiv:2410.10813](https://arxiv.org/abs/2410.10813) | 跨持续会话准确率下降 30% | 支持 H1；提供 baseline 任务 3 |
-| METR RE-Bench | [arXiv:2503.14499](https://arxiv.org/abs/2503.14499) | 50% 任务完成时长：Claude 3.7 Sonnet ≈ 50 分钟 | 支持 H3（纠错关键） |
-| HORIZON | [arXiv:2604.11978](https://arxiv.org/abs/2604.11978) | 失败归因三类：规划 / 记忆 / 错误累积 | **借鉴 LLM-as-Judge 归因 schema** |
+| Kwa et al. 2025（不是 RE-Bench 这篇论文本身；摘要说任务集里用了 RE-Bench） | [arXiv:2503.14499](https://arxiv.org/abs/2503.14499) | 摘要：Claude 3.7 Sonnet 的 50% time horizon 大约 50 分钟 | 这是时间视野测量，不是对本协议 H3 的直接证据 |
+| HORIZON | [arXiv:2604.11978](https://arxiv.org/abs/2604.11978) | 摘要确认有 LLM-as-a-Judge 归因流程。规划 / 记忆 / 错误累积这三类不在摘要里 [UNVERIFIED] | 三类 schema 是本协议自己的定义 |
 
 ### 子题 2：Context Rot / 长上下文衰减
 
@@ -30,11 +31,11 @@
 
 | 工作 | 链接 | 关键发现 |
 |---|---|---|
-| Chroma Context Rot | [research.trychroma.com](https://research.trychroma.com/context-rot) | 18 模型仍随长度退化；低语义匹配、相似干扰项会改变衰减率 |
-| NoLiMa | [arXiv:2502.05167](https://arxiv.org/abs/2502.05167) | 32K 时 11/13 模型跌到 50% 基线；GPT-4o 99.3%→69.7% |
+| Chroma Context Rot | [research.trychroma.com](https://research.trychroma.com/context-rot) | 页面本轮未抓取 [UNVERIFIED] |
+| NoLiMa | [arXiv:2502.05167](https://arxiv.org/abs/2502.05167) | id 与题名已核对。32K / 11/13 / 99.3%→69.7% 没有对照 PDF [UNVERIFIED] |
 | HELMET | [arXiv:2410.02694](https://arxiv.org/abs/2410.02694) | NIAH 与下游任务相关性低；推理能力差距随长度扩大 |
-| LongBench v2 | [arXiv:2412.15204](https://arxiv.org/abs/2412.15204) | 最佳模型仅 50.1%，o1-preview 推理后 57.7% |
-| SLIM | [arXiv:2510.18939](https://samaya.ai/blog/lost-in-the-maze-overcoming-context-limitations-in-long-horizon-agentic-search) | 50%+ 失败与上下文管理有关 |
+| LongBench v2 | [arXiv:2412.15204](https://arxiv.org/abs/2412.15204) | id 与题名已核对。50.1% / 57.7% 没有对照 PDF [UNVERIFIED] |
+| SLIM | [arXiv:2510.18939](https://arxiv.org/abs/2510.18939) | 题名是 Lost in the Maze，摘要把方法叫做 SLIM。「50%+ 失败与上下文管理有关」不在摘要里 [UNVERIFIED] |
 
 ### 子题 3：8 种反退化机制
 
@@ -98,7 +99,7 @@
 1. [Vending-Bench — arXiv:2502.15840](https://arxiv.org/abs/2502.15840)
 2. [Project Vend](https://www.anthropic.com/research/project-vend-1)
 3. [LongMemEval — arXiv:2410.10813](https://arxiv.org/abs/2410.10813)
-4. [METR RE-Bench — arXiv:2503.14499](https://arxiv.org/abs/2503.14499)
+4. [Kwa et al. 2025, Measuring AI Ability to Complete Long Software Tasks — arXiv:2503.14499](https://arxiv.org/abs/2503.14499)
 5. [HORIZON — arXiv:2604.11978](https://arxiv.org/abs/2604.11978)
 6. [Chroma Context Rot](https://research.trychroma.com/context-rot)
 7. [NoLiMa — arXiv:2502.05167](https://arxiv.org/abs/2502.05167)

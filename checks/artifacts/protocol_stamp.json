@@ -1,0 +1,10 @@
+{
+  "kind": "git-content-stamp",
+  "osf_project_created": false,
+  "doi": null,
+  "statement": "SHA-256 of the protocol files in this tree. Not an OSF registration, not a DOI, and not a third-party timestamp. The git commit that contains these bytes is the repository clock; read it with `git rev-parse HEAD`. The existing tag v0.4-pre-reg is an older commit and is not a registration.",
+  "files": {
+    "preregistration.md": "83fd67036374870353b99debd006f857e219aabd6c05ab8c1e2e69e517897f34",
+    "experiment_manifest.json": "d94441f7906cf1f92b914f057c268a58a8fb8cf29e03e512ac07be135933cf5c"
+  }
+}

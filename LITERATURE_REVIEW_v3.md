@@ -3,6 +3,7 @@
 > 检索截止：2026-07-29
 > 配套：`LITERATURE_REVIEW.md`（第一轮）、`LITERATURE_REVIEW_v2.md`（第二轮）
 > 目的：在 v0.3 基础上识别**模型代际、伦理合规、报告规范**三类盲点，给出 v0.4 修订方案。
+> 引用核对（2026-11-16）：见 `CITATION_AUDIT.md`。§A1 里除 Agents-A1 的 arXiv id 以外，各行没有已核对的标识符，整表视为 [UNVERIFIED]。「Qwen 基」和「Shanghai AI Lab」不在该摘要里，同样是 [UNVERIFIED]。
 
 ---
 
@@ -145,9 +146,9 @@ echo-chambers-of-one/
 3. [Agents-A1 (Shanghai AI Lab, arXiv 2606.30616), 2026](https://arxiv.org/abs/2606.30616)
 4. [DeepSeek V3.2 技术报告, 2025-12](https://api-docs.deepseek.com/)
 5. [Claude Sonnet 4 1M context 官方公告, 2025-08](https://www.anthropic.com/)
-6. [The Llama 4 Herd: Architecture, Training, Evaluation, 2026](https://arxiv.org/abs/2606.30616)
+6. [The Llama 4 Herd: Architecture, Training, Evaluation, 2026](https://arxiv.org/abs/2606.30616) [MISMATCH] 这条 id 的记录是 Agents-A1，不是 Llama 4 的论文。不要把这个链接当作 Llama 4 的出处。
 7. [Qwen3-235B-Thinking](https://qwen.readthedocs.io/)
-8. [LongMemEval / LongMemEval-V2 / LoCoMo / EverMemBench, 2025-2026](https://arxiv.org/abs/2410.10813)
+8. [LongMemEval (arXiv:2410.10813)](https://arxiv.org/abs/2410.10813)。LongMemEval-V2 与 EverMemBench 不是这一篇 [UNVERIFIED]。LoCoMo 是另一篇（arXiv:2402.17753）。
 9. [NoLiMa arXiv 2502.05167](https://arxiv.org/abs/2502.05167)
 
 ### 伦理 + IRB
@@ -170,7 +171,7 @@ echo-chambers-of-one/
 24. [OSF Help – Preregistration Templates](https://help.osf.io/article/1454-preregistration-templates)
 25. [COS Registered Reports](https://www.cos.io/initiatives/registered-reports)
 26. [PRISMA 2020 (Page et al. BMJ 2021)](https://doi.org/10.1136/bmj.n71)
-27. [CONSORT-AI / SPIRIT-AI (Cruz Rivera et al. BMJ 2020)](https://doi.org/10.1136/bmj.m3210)
+27. [SPIRIT-AI (Cruz Rivera et al. BMJ 2020)](https://doi.org/10.1136/bmj.m3210)。这个 DOI 不是 CONSORT-AI。CONSORT-AI 在本仓库没有已核对的 DOI [UNVERIFIED]。
 28. [EQUATOR Network](https://www.equator-network.org/)
 29. [paperswithcode – Tips for Releasing Research Code](https://github.com/paperswithcode/releasing-research-code)
 30. [COS Open Science Badges](https://www.cos.io/our-services/badges)
